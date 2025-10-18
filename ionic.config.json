@@ -1,0 +1,7 @@
+{
+  "name": "histovis-ux",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
