@@ -3,7 +3,7 @@ import { Inject, inject, Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { LoginRequest, LoginResponse } from "./login.service.types";
 import { Observable, tap } from "rxjs";
-import { ApiService } from "src/app/core/api/api.service";
+import { ApiService } from "src/app/core/services/api/api.service";
 import { AuthService } from "src/app/core/auth/auth.service";
 
 @Injectable({providedIn: 'root'})

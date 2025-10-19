@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { User } from "../../features/login/model";
-import { StorageService } from "../storage/storage.service";
+import { StorageService } from "../services/storage/storage.service";
 
 
 @Injectable({providedIn: 'root'})
