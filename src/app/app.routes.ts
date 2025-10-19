@@ -37,7 +37,7 @@ export const routes: Routes = [
   },
   {
     path: 'upload',
-    loadComponent: () => import('./features/upload/upload.page').then( m => m.UploadPage),
+    loadComponent: () => import('./features/upload/upload-image/upload-image.page').then( m => m.UploadImagePage),
     canActivate: [authGuard],
   },
 ];
