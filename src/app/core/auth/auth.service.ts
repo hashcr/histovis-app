@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { User } from "../../features/login/model";
+import { User } from "../models/user.model";
 import { StorageService } from "../services/storage/storage.service";
 
 

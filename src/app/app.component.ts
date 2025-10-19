@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonAvatar, IonChip } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { cloudUploadSharp, cloudUploadOutline, buildSharp, buildOutline, settingsSharp, settingsOutline, logOutSharp, logOutOutline, searchSharp, searchOutline, homeSharp, homeOutline } from 'ionicons/icons';
-import { User } from './features/login/model';
+import { User } from './core/models/user.model';
 import { AuthService } from './core/auth/auth.service';
 
 @Component({
