@@ -4,7 +4,7 @@
       <ion-content>
         <ion-list id="inbox-list">
           <ion-list-header>User</ion-list-header>
-          <ion-note>hi&#64; -user-</ion-note>
+          <ion-note>{{ loggedUser()?.email ?? 'Guest' }}</ion-note>
 
           @for (p of appPages; track p; let i = $index) {
             <ion-menu-toggle auto-hide="false">

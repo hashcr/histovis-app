@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>logout</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">logout</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  
+  <div class="logout-message-wrapper">
+    <div class="logout-message">
+      <ion-icon name="log-out-outline" aria-hidden="true" class="logout-icon"></ion-icon>
+      @if(loggedOut()) {
+        <h2>You have been logged out</h2>
+        <p class="muted">Thanks for visiting — you'll be redirected or can log in again.</p>
+      } @else {
+        <h2>You are not logged in</h2>
+        <p class="muted">Please log in to access this feature.</p>
+      }
+      <ion-button fill="outline" size="small" routerLink="/login">Log in again</ion-button>
+    </div>
+  </div>
+
+</ion-content>

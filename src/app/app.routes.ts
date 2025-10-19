@@ -8,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    redirectTo: 'folder/search',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -19,5 +19,9 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./features/login/login.page').then( m => m.LoginPage)
+  },
+  {
+    path: 'logout',
+    loadComponent: () => import('./features/logout/logout.page').then( m => m.LogoutPage)
   },
 ];
