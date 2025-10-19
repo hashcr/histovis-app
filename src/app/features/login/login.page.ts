@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem , IonInput, IonText, IonButton, IonSpinner} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem , IonInput, IonText, IonButton, IonSpinner, IonInputPasswordToggle} from '@ionic/angular/standalone';
 import { LoginFormService } from './login.form.service';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { LoginFormValueService } from './login.form.value.service';
@@ -14,7 +14,8 @@ import { Router } from '@angular/router';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonInput, IonText, IonButton, IonSpinner, CommonModule, ReactiveFormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonInput, 
+    IonText, IonButton, IonSpinner, IonInputPasswordToggle, CommonModule, ReactiveFormsModule]
 })
 export class LoginPage {
 

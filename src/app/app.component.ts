@@ -1,17 +1,19 @@
 
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink } from '@ionic/angular/standalone';
+import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonAvatar, IonChip } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { cloudUploadSharp, buildSharp, settingsSharp, logOutSharp, searchSharp, homeSharp} from 'ionicons/icons';
 import { User } from './features/login/model';
 import { AuthService } from './core/auth/auth.service';
+import { SlicePipe, UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [RouterLink, RouterLinkActive, IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterLink, IonRouterOutlet],
+  imports: [SlicePipe, UpperCasePipe, RouterLink, RouterLinkActive, IonApp, IonSplitPane, IonMenu, IonContent, IonList,
+    IonListHeader, IonNote, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterLink, IonRouterOutlet, IonAvatar, IonChip],
 })
 export class AppComponent {
   private authService = inject(AuthService);
