@@ -9,21 +9,35 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    redirectTo: 'folder/search',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
-    path: 'folder/:id',
-    loadComponent: () =>
-      import('./folder/folder.page').then((m) => m.FolderPage),
-    canActivate: [authGuard],
+    path: 'upload',
+    redirectTo: 'logout',
+    pathMatch: 'full',
+  },
+  {
+    path: 'search',
+    redirectTo: 'logout',
+    pathMatch: 'full',
+  },
+  {
+    path: 'analyze',
+    redirectTo: 'logout',
+    pathMatch: 'full',
+  },
+  {
+    path: 'admin',
+    redirectTo: 'logout',
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/login/login.page').then( m => m.LoginPage)
+    loadComponent: () => import('./features/login/login.page').then(m => m.LoginPage)
   },
   {
     path: 'logout',
-    loadComponent: () => import('./features/logout/logout.page').then( m => m.LogoutPage)
+    loadComponent: () => import('./features/logout/logout.page').then(m => m.LogoutPage)
   },
 ];
