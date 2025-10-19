@@ -13,11 +13,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'upload',
-    redirectTo: 'logout',
-    pathMatch: 'full',
-  },
-  {
     path: 'search',
     redirectTo: 'logout',
     pathMatch: 'full',
@@ -39,5 +34,10 @@ export const routes: Routes = [
   {
     path: 'logout',
     loadComponent: () => import('./features/logout/logout.page').then(m => m.LogoutPage)
+  },
+  {
+    path: 'upload',
+    loadComponent: () => import('./features/upload/upload.page').then( m => m.UploadPage),
+    canActivate: [authGuard],
   },
 ];
