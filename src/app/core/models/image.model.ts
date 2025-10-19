@@ -1,10 +1,9 @@
-export interface Image {
+export interface ImageInfo {
   id: string;
-  name: string;
+  fileName: string;
   url: string;
-  alt: string;
   title: string;
   description: string;
-  format: string;
   tagsList: string[];
+  imageFile: File | null;
 }

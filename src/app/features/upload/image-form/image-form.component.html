@@ -1,3 +1,69 @@
-<p>
-  image-form works!
-</p>
+<ion-content class="ion-padding">
+  <form [formGroup]="form()" (ngSubmit)="onSubmit()">
+
+    <ion-item>
+      <ion-label position="floating">Id</ion-label>
+      <ion-input formControlName="id" [class.hidden]="form().controls.id.disabled"></ion-input>
+    </ion-item>
+    @if (form().controls.id.touched && form().controls.id.invalid) {
+    <ion-text color="danger" class="ion-padding-start">Id is required</ion-text>
+    }
+
+    <ion-item>
+      <ion-label position="floating">Filename</ion-label>
+      <ion-input formControlName="fileName"></ion-input>
+    </ion-item>
+    @if (form().controls.fileName.touched && form().controls.fileName.invalid) {
+    <ion-text color="danger" class="ion-padding-start">Filename is required</ion-text>
+    }
+
+    <ion-item>
+      <ion-label position="floating">Url</ion-label>
+      <ion-input formControlName="url"></ion-input>
+    </ion-item>
+    @if (form().controls.url.touched && form().controls.url.invalid) {
+    <ion-text color="danger" class="ion-padding-start">Url is required</ion-text>
+    }
+
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input formControlName="title"></ion-input>
+    </ion-item>
+    @if (form().controls.title.touched && form().controls.title.invalid) {
+    <ion-text color="danger" class="ion-padding-start">Title is required</ion-text>
+    }
+
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea formControlName="description"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Image</ion-label>
+      <input type="file" accept="image/*" (change)="onFileChange($event)" />
+    </ion-item>
+
+    @if (preview()) {
+    <ion-img [src]="preview()" class="ion-margin-top" style="border-radius:8px"></ion-img>
+    }
+
+    <ion-item>
+      <ion-label position="stacked">Tags</ion-label>
+      <ion-input #tagInput type="text" placeholder="Add tag and press Enter"
+        (keyup.enter)="addTag(tagInput.value); tagInput.value=''">
+      </ion-input>
+    </ion-item>
+
+    @for (tag of tags.controls; track tag; let i = $index) {
+    <ion-chip color="secondary">
+      {{ tag.value }}
+      <ion-icon name="close-circle" (click)="removeTag(i)"></ion-icon>
+    </ion-chip>
+    }
+
+    <ion-button expand="block" class="ion-margin-top" type="submit" [disabled]="form().invalid">
+      Save
+    </ion-button>
+
+  </form>
+</ion-content>
