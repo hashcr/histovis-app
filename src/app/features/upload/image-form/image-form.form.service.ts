@@ -38,9 +38,18 @@ export class ImageFormFormService {
         tags.removeAt(index);
     }
 
+    clearTags(form: FormGroup<ImageForm>) {
+        const tags = this.tags(form);
+        while (tags.length) {
+            tags.removeAt(0);
+        }
+    }
+
+
     resetForm(form: FormGroup<ImageForm>) {
         form.reset();
         form.patchValue({ imageFile: null });
+        this.clearTags(form);
         form.controls.imageFile.markAsPristine();
         form.controls.imageFile.markAsUntouched();
     }

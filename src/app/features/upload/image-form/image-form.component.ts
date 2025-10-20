@@ -88,4 +88,27 @@ export class ImageFormComponent {
   private resetFileInput() {
     this.fileInput.nativeElement.value = '';
   }
+
+  async onTagEnter(eventx: Event, tagInput: IonInput) {
+    const event = eventx as KeyboardEvent;
+    event.preventDefault();     // stop native submit
+    event.stopPropagation();    // stop bubbling to the form
+
+    const inputEl = await tagInput.getInputElement();
+    const value = inputEl.value?.trim() ?? '';
+    if (!value) return;
+
+    this.addTag(value);
+    inputEl.value = '';         // clear visually
+  }
+
+  maybeBlockEnter(evx: Event) {
+    const ev = evx as KeyboardEvent;
+    const target = ev.target as HTMLElement | null;
+    // add a class on your ion-input wrapper, e.g., class="tag-input"
+    if (target && target.closest('.tag-input')) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }
 }

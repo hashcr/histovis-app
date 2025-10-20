@@ -1,5 +1,5 @@
 <ion-content class="ion-padding">
-  <form [formGroup]="form()" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form()" (ngSubmit)="onSubmit()" (keydown.enter)="maybeBlockEnter($event)">
 
     <ion-item [style.display]="form().controls.id.disabled ? 'none' : 'block'">
       <ion-label position="floating">Id</ion-label>
@@ -49,8 +49,8 @@
 
     <ion-item>
       <ion-label position="stacked">Tags</ion-label>
-      <ion-input #tagInput type="text" placeholder="Add tag and press Enter"
-        (keyup.enter)="addTag(tagInput.value); tagInput.value=''">
+      <ion-input class="tag-input" #tagInput type="text" placeholder="Add tag and press Enter"
+        (keyup.enter)="onTagEnter($event, tagInput)">
       </ion-input>
     </ion-item>
 
