@@ -45,7 +45,8 @@ describe('ImageFormComponent', () => {
         [resetTrigger]="resetTriggerFactory"
         (save)="onSave($event)">
       </app-image-form>
-    `
+    `,
+  imports: [ImageFormComponent],
 })
 class TestHostComponent {
   @Input() imageData= mockImage;

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem , IonInput, IonText, IonButton, IonSpinner, IonInputPasswordToggle} from '@ionic/angular/standalone';
 import { LoginFormService } from './login.form.service';
-import { IonicModule, ToastController } from '@ionic/angular';
 import { LoginFormValueService } from './login.form.value.service';
 import { LoginRequest } from './login.service.types';
 import { LoginService } from './login.service';
