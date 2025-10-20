@@ -9,6 +9,7 @@ import { createDefaultImageInfo } from './utils';
 import { ImageService } from '../services/image.service';
 import { UploadImageFormValueService } from './upload-image.form.value.service';
 import { ImageFormFormService } from '../image-form/image-form.form.service';
+import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 
 @Component({
   standalone: true,
@@ -22,6 +23,7 @@ export class UploadImagePage {
   private imageService = inject(ImageService);
   private uploadImageFormValueService = inject(UploadImageFormValueService);
   private router = inject(Router);
+  private notifications = inject(NotificationService);
 
   // Signals
   resetTrigger = signal(false); //  Signal to ImageFormComponent to reset the form
@@ -34,9 +36,12 @@ export class UploadImagePage {
     this.imageService.upload(request).subscribe({
       next: async () => {
         this.resetTrigger.set(true);
-        this.router.navigateByUrl('/upload', { replaceUrl: true })
+        await this.router.navigateByUrl('/upload', { replaceUrl: true });
+        await this.notifications.showSuccess('Image uploaded successfully.');
       },
-      error: err => console.error('Upload failed:', err),
+      error: async (err) => {
+        await this.notifications.showError(err.error?.message || 'Could not save item');
+      },
     });
   }
 }
