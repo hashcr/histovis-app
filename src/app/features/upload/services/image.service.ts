@@ -10,7 +10,7 @@ export class ImageService {
   
     private api = inject(ApiService);
 
-    upload(payload: ImageUploadRequest): Observable<ImageUploadResponse> {
-        return this.api.post<ImageUploadResponse, ImageUploadRequest>('images', payload);
+    upload(payload: FormData): Observable<ImageUploadResponse> {
+        return this.api.post<ImageUploadResponse, FormData>('images', payload);
     }
 }
