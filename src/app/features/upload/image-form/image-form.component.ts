@@ -1,9 +1,9 @@
-import { Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, OnInit, output, Signal, signal, untracked, ViewChild, WritableSignal } from '@angular/core';
 import { ImageFormFormService } from './image-form.form.service';
 import { ImageInfo } from '../../../core/models/image.model';
 import { FormArray } from '@angular/forms';
 import { ImageFormValue } from './image-form.types';
-import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonIcon, IonText, IonContent, IonImg, IonChip} from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonIcon, IonText, IonContent, IonImg, IonChip } from '@ionic/angular/standalone';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -23,6 +23,7 @@ export class ImageFormComponent {
   imageData = input.required<ImageInfo>();
   save = output<ImageFormValue>();
   preview = signal<string | null>(null);
+  resetTrigger = input<WritableSignal<boolean>>();
 
   // Form
   readonly form = computed(() => this.imageFormService.createForm(this.imageData()));
@@ -30,9 +31,23 @@ export class ImageFormComponent {
   constructor() {
     effect(() => {
       const data = this.imageData();
-      if (data.url) { 
+      if (data.url) {
         this.preview.set(data.url)
       };
+    });
+
+    effect(() => {
+      const trigger = this.resetTrigger();
+      if (trigger?.()) {
+        this.imageFormService.resetForm(this.form());
+        this.preview.set(null);
+        this.resetFileInput();
+
+        // Reset the trigger back to false without looping
+        untracked(() => {
+          trigger.set(false);
+        });
+      }
     });
   }
 
@@ -42,7 +57,7 @@ export class ImageFormComponent {
 
   addTag(tag: string | number | null | undefined) {
     if (!tag) return;
-    const text = `${tag}`; 
+    const text = `${tag}`;
     if (text.trim()) {
       this.imageFormService.addTag(this.form(), text.trim());
     }
@@ -66,5 +81,11 @@ export class ImageFormComponent {
   onSubmit() {
     if (this.form().invalid) return;
     this.save.emit(this.form());
+  }
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  private resetFileInput() {
+    this.fileInput.nativeElement.value = '';
   }
 }
