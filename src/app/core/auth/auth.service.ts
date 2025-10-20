@@ -10,6 +10,10 @@ export class AuthService {
 
     readonly user = this._user.asReadonly();
 
+    constructor() {
+        this.init();
+    }
+
     async init() {
         const stored = await this.storage.get<User>('user');
         if (stored) this._user.set(stored);
