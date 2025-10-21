@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, input, OnInit, output, Signal, signal, untracked, ViewChild, WritableSignal } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, output, signal, untracked, ViewChild, WritableSignal } from '@angular/core';
 import { ImageFormFormService } from './image-form.form.service';
 import { ImageInfo } from '../../../core/models/image.model';
 import { FormArray } from '@angular/forms';
