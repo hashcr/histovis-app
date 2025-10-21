@@ -11,3 +11,7 @@ export interface ImageUploadResponse {
 export interface ImageSearchResponse {
     images: ImageInfo[];
 }
+
+export interface ImageGetResponse {
+    image: ImageInfo;
+}
