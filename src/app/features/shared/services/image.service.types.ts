@@ -8,3 +8,6 @@ export interface ImageUploadResponse {
     id: string;
 }
 
+export interface ImageSearchResponse {
+    images: ImageInfo[];
+}
