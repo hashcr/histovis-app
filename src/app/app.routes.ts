@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth-guard';
+import { loginAuthGuard } from './core/auth/login-auth-guard';
 
 export const routes: Routes = [
   {
@@ -13,18 +14,14 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'analyze',
-    redirectTo: 'logout',
-    pathMatch: 'full',
-  },
-  {
     path: 'admin',
     redirectTo: 'logout',
     pathMatch: 'full',
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/login/login.page').then(m => m.LoginPage)
+    loadComponent: () => import('./features/login/login.page').then(m => m.LoginPage),
+    canActivate: [loginAuthGuard],
   },
   {
     path: 'logout',
@@ -37,6 +34,17 @@ export const routes: Routes = [
   },
   {
     path: 'search',
-    loadComponent: () => import('./features/search/image-search/image-search.page').then( m => m.ImageSearchPage)
+    loadComponent: () => import('./features/search/image-search/image-search.page').then( m => m.ImageSearchPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'analyze',
+    loadComponent: () => import('./features/analyze/image-analysis/image-analysis.page').then( m => m.ImageAnalysisPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'analyze/:id',
+    loadComponent: () => import('./features/analyze/image-analysis/image-analysis.page').then( m => m.ImageAnalysisPage),
+    canActivate: [authGuard],
   },
 ];
