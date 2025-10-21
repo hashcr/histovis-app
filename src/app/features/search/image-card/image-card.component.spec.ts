@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ImageCardComponent } from './image-card.component';
 import { Component, Input } from '@angular/core';
 import { ImageInfo } from 'src/app/core/models/image.model';
+import { provideRouter } from '@angular/router';
 
 describe('ImageCardComponent', () => {
   let fixture: ComponentFixture<any>;
@@ -11,7 +12,10 @@ describe('ImageCardComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [TestHostComponent],
-    }).compileComponents();
+      providers: [
+        provideRouter([]),
+      ]
+    });
 
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
