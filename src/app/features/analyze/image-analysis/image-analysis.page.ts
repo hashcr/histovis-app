@@ -1,0 +1,86 @@
+import { Component, computed, effect, ElementRef, inject, NgZone, OnInit, signal, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton } from '@ionic/angular/standalone';
+import OpenSeadragon from 'openseadragon';
+import { ActivatedRoute } from '@angular/router';
+import { ImageService } from '../../shared/services/image.service';
+import { ImageInfo } from 'src/app/core/models/image.model';
+import { NotificationService } from 'src/app/core/services/notifications/notification.service';
+
+@Component({
+  selector: 'app-image-analysis',
+  templateUrl: './image-analysis.page.html',
+  styleUrls: ['./image-analysis.page.scss'],
+  standalone: true,
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton, CommonModule, FormsModule]
+})
+export class ImageAnalysisPage implements OnInit {
+  // Services
+  private route = inject(ActivatedRoute);
+  private imageService = inject(ImageService);
+  private notifications = inject(NotificationService);
+  private ngZone = inject(NgZone);
+
+  // Signals
+  imageId = signal<string | null>(null);
+  imageInfo = signal<ImageInfo | null>(null);
+
+  // OpenSeaDragon 
+  private viewer: OpenSeadragon.Viewer | null = null;
+  @ViewChild('osdViewer', { static: false }) viewerElement!: ElementRef<HTMLDivElement>;
+
+  constructor() {
+    effect(() => {
+      if (this.imageInfo()) {
+        this.initViewer(this.imageInfo()?.url ?? '');
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id') ?? undefined;
+
+      if (id) {
+        this.imageId.set(id);
+        this.retrieveImage();
+      }
+    });
+  }
+
+  async retrieveImage() {
+    const id = this.imageId()?.trim();
+    if (!id) return;
+
+    this.imageService.get(id).subscribe({
+      next: async (result) => {
+        this.imageInfo.set(result.image);
+      },
+      error: async (err) => {
+        await this.notifications.showError(err.error?.message || 'Could not fetch the image');
+      }
+    });
+  }
+
+  initViewer(url: string) {
+    if (!url) return;
+
+    if (this.viewer) {
+      this.viewer.destroy();
+      this.viewer = null;
+    }
+
+    this.viewer = this.ngZone.runOutsideAngular(() =>
+      OpenSeadragon({
+        element: this.viewerElement.nativeElement,
+        tileSources: { type: 'image', url },
+        showNavigator: true,
+        animationTime: 0.9,
+        blendTime: 0.1,
+        constrainDuringPan: true,
+        maxZoomPixelRatio: 2,
+      })
+    );
+  }
+}

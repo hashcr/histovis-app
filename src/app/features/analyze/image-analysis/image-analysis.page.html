@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Image Analysis</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Image Analysis</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-item>
+    <ion-label position="stacked">Image ID</ion-label>
+    <ion-input
+      [ngModel]="imageId()"
+      (ngModelChange)="imageId.set($event)"
+    >
+    </ion-input>
+  </ion-item>
+
+  <ion-button expand="block" class="ion-margin-top" (click)="retrieveImage()">
+    Retrieve Image
+  </ion-button>
+
+  @if(imageInfo()?.url) {
+    <div #osdViewer class="osd-viewer"></div>
+  }
+
+</ion-content>
