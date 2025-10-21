@@ -1,13 +1,13 @@
 <ion-card>
   <div class="image-container">
-    <ion-img [src]="image.url" alt="{{ image.title }}"></ion-img>
+    <ion-img [src]="image().url" alt="{{ image().title }}"></ion-img>
   </div>
   <ion-card-header>
-    <ion-card-title>{{ image.title }}</ion-card-title>
+    <ion-card-title>{{ image().title }}</ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <ion-text color="medium">{{ image.description }}</ion-text>
-    @for(tag of image.tagsList; track tag) {
+    <ion-text color="medium">{{ image().description }}</ion-text>
+    @for(tag of image().tagsList; track tag) {
     <ion-chip><ion-label>{{ tag }}</ion-label></ion-chip>
     }
   </ion-card-content>
