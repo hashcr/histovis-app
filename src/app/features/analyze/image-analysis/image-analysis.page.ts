@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, NgZone, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton } from '@ionic/angular/standalone';
@@ -15,7 +15,7 @@ import { NotificationService } from 'src/app/core/services/notifications/notific
   standalone: true,
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton, CommonModule, FormsModule]
 })
-export class ImageAnalysisPage implements OnInit {
+export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services
   private route = inject(ActivatedRoute);
   private imageService = inject(ImageService);
@@ -25,23 +25,31 @@ export class ImageAnalysisPage implements OnInit {
   // Signals
   imageId = signal<string | null>(null);
   imageInfo = signal<ImageInfo | null>(null);
+  private viewerReady = signal(false);
 
   // OpenSeaDragon 
   private viewer: OpenSeadragon.Viewer | null = null;
   @ViewChild('osdViewer', { static: false }) viewerElement!: ElementRef<HTMLDivElement>;
 
   constructor() {
+
     effect(() => {
-      if (this.imageInfo()) {
-        this.initViewer(this.imageInfo()?.url ?? '');
+      const info = this.imageInfo();
+      const ready = this.viewerReady();
+
+      if (ready && info?.url) {
+        this.initViewer(info.url);
       }
     });
   }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id') ?? undefined;
+  ngAfterViewInit() {
+    this.viewerReady.set(true);
+  }
 
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
       if (id) {
         this.imageId.set(id);
         this.retrieveImage();
@@ -64,7 +72,7 @@ export class ImageAnalysisPage implements OnInit {
   }
 
   initViewer(url: string) {
-    if (!url) return;
+    if (!url || !this.viewerElement?.nativeElement) return;
 
     if (this.viewer) {
       this.viewer.destroy();
@@ -83,5 +91,12 @@ export class ImageAnalysisPage implements OnInit {
         maxZoomPixelRatio: 2,
       })
     );
+  }
+
+  ngOnDestroy() {
+    if (this.viewer) {
+      this.viewer.destroy();
+      this.viewer = null;
+    }
   }
 }
