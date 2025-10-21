@@ -2,7 +2,7 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
-import { ImageService } from '../../upload/services/image.service';
+import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';
 
 @Component({

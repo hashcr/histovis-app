@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ImageSearchPage } from './image-search.page';
-import { ImageService } from '../../upload/services/image.service';
+import { ImageService } from '../../shared/services/image.service';
 
 describe('ImageSearchPage', () => {
   let component: ImageSearchPage;

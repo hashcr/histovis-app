@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { UploadImagePage } from './upload-image.page';
-import { ImageService } from '../services/image.service';
+import { ImageService } from '../../shared/services/image.service';
 import { UploadImageFormValueService } from './upload-image.form.value.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { Router, provideRouter } from '@angular/router';

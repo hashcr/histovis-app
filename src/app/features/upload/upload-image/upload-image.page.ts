@@ -6,7 +6,7 @@ import { ImageInfo } from '../../../core/models/image.model';
 import { ImageFormComponent } from '../image-form/image-form.component';
 import { ImageFormValue } from '../image-form/image-form.types';
 import { createDefaultImageInfo } from './utils';
-import { ImageService } from '../services/image.service';
+import { ImageService } from '../../shared/services/image.service';
 import { UploadImageFormValueService } from './upload-image.form.value.service';
 import { ImageFormFormService } from '../image-form/image-form.form.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';

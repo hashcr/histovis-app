@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
-import { ImageUploadRequest } from '../services/image.service.types';
+import { ImageUploadRequest } from '../../shared/services/image.service.types';
 import { ImageFormValue } from '../image-form/image-form.types';
 
 
