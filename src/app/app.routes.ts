@@ -47,4 +47,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/analyze/image-analysis/image-analysis.page').then( m => m.ImageAnalysisPage),
     canActivate: [authGuard],
   },
+  {
+    path: 'about',
+    loadComponent: () => import('./features/about/about.page').then( m => m.AboutPage)
+  },
 ];

@@ -21,7 +21,7 @@
             </ion-item>
           </ion-menu-toggle>
           }
-          
+
           @if(loggedUser()?.isAdmin) {
           <ion-menu-toggle auto-hide="false">
             <ion-item routerDirection="root" [routerLink]="['/admin']" lines="none" detail="false"
@@ -31,6 +31,15 @@
             </ion-item>
           </ion-menu-toggle>
           }
+
+          <ion-menu-toggle auto-hide="false">
+            <ion-item routerDirection="root" [routerLink]="['/about']" lines="none" detail="false"
+              routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" [ios]="'information-circle-outline'"
+                [md]="'information-circle-sharp'"></ion-icon>
+              <ion-label>About</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
 
           @if(loggedUser()) {
           <ion-menu-toggle auto-hide="false">
