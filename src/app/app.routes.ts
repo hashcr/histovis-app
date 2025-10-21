@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    redirectTo: 'login',
+    redirectTo: 'upload',
     pathMatch: 'full',
   },
   {
@@ -39,5 +39,9 @@ export const routes: Routes = [
     path: 'upload',
     loadComponent: () => import('./features/upload/upload-image/upload-image.page').then( m => m.UploadImagePage),
     canActivate: [authGuard],
+  },
+  {
+    path: 'image-search',
+    loadComponent: () => import('./features/search/image-search/image-search.page').then( m => m.ImageSearchPage)
   },
 ];
