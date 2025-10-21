@@ -74,6 +74,7 @@ export class ImageAnalysisPage implements OnInit {
     this.viewer = this.ngZone.runOutsideAngular(() =>
       OpenSeadragon({
         element: this.viewerElement.nativeElement,
+        prefixUrl: 'assets/openseadragon/images/',
         tileSources: { type: 'image', url },
         showNavigator: true,
         animationTime: 0.9,
