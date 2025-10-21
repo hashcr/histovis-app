@@ -1,18 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ImageSearchPage } from './image-search.page';
 import { ImageService } from '../../shared/services/image.service';
+import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 
 describe('ImageSearchPage', () => {
   let component: ImageSearchPage;
   let fixture: ComponentFixture<ImageSearchPage>;
-  let imageSearchMock: jasmine.SpyObj<ImageService>;
+  let imageSearchServiceMock: jasmine.SpyObj<ImageService>;
+  let notificactionsServiceMock: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    imageSearchMock = jasmine.createSpyObj('ImageService', ['getAllImages']);
+    imageSearchServiceMock = jasmine.createSpyObj('ImageService', ['getAllImages']);
+    notificactionsServiceMock = jasmine.createSpyObj('NotificationService', ['showError']);
+    
     TestBed.configureTestingModule({
       imports: [ImageSearchPage],
       providers: [
-        { provide: ImageService, useValue: imageSearchMock }
+        { provide: ImageService, useValue: imageSearchServiceMock },
+        { provide: NotificationService, useValue: notificactionsServiceMock }
       ]
     });
     fixture = TestBed.createComponent(ImageSearchPage);

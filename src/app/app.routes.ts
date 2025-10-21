@@ -13,11 +13,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'search',
-    redirectTo: 'logout',
-    pathMatch: 'full',
-  },
-  {
     path: 'analyze',
     redirectTo: 'logout',
     pathMatch: 'full',
@@ -41,7 +36,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'image-search',
+    path: 'search',
     loadComponent: () => import('./features/search/image-search/image-search.page').then( m => m.ImageSearchPage)
   },
 ];
