@@ -1,19 +1,19 @@
 import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import OpenSeadragon from 'openseadragon';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
-
+import { ImageDetailsComponent } from '../image-details/image-details.component';
 @Component({
   selector: 'app-image-analysis',
   templateUrl: './image-analysis.page.html',
   styleUrls: ['./image-analysis.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonLabel, IonInput, IonItem, IonButton, CommonModule, FormsModule]
+  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol ],
 })
 export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services

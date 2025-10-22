@@ -11,19 +11,43 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-item>
-    <ion-label position="stacked">Image ID</ion-label>
-    <ion-input
-      [ngModel]="imageId()"
-      (ngModelChange)="imageId.set($event)"
-    >
-    </ion-input>
-  </ion-item>
+  <!-- Search -->
+  <ion-card class="search-card">
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Image ID</ion-label>
+        <ion-input [ngModel]="imageId()" (ngModelChange)="imageId.set($event)">
+        </ion-input>
+      </ion-item>
 
-  <ion-button expand="block" class="ion-margin-top" (click)="retrieveImage()">
-    Retrieve Image
-  </ion-button>
+      <ion-button expand="block" class="ion-margin-top" (click)="retrieveImage()">
+        Retrieve Image
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 
-  <div #osdViewer class="osd-viewer"></div>
+  <!-- Viewer-->
+  <ion-grid fixed>
+    <ion-row>
+      <!-- Viewer (Left on Desktop / Top on Mobile) -->
+      <ion-col size="12" size-lg="7">
+        <ion-card class="viewer-card">
 
+          <ion-card-header>
+            <ion-card-title>{{ imageInfo()?.title }}</ion-card-title>
+            <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <div #osdViewer class="osd-viewer"></div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+       <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
+        <ion-col size="12" size-lg="5">
+          <app-image-details [imageInfo]="imageInfo()"></app-image-details>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 </ion-content>

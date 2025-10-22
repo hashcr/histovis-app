@@ -22,12 +22,13 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(5);
+    expect(menuItems.length).toEqual(6);
     expect(menuItems[0].textContent).toContain('Guest');
     expect(menuItems[1].textContent).toContain('Home');
     expect(menuItems[2].textContent).toContain('Upload');
     expect(menuItems[3].textContent).toContain('Search');
     expect(menuItems[4].textContent).toContain('Analyze');
+    expect(menuItems[5].textContent).toContain('About');
   });
 
   it('should have urls', () => {
@@ -35,7 +36,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(4);
+    expect(menuItems.length).toEqual(5);
     expect(menuItems[0].getAttribute('href')).toEqual(
       '/home'
     );
@@ -47,6 +48,9 @@ describe('AppComponent', () => {
     );
     expect(menuItems[3].getAttribute('href')).toEqual(
       '/analyze'
+    );
+    expect(menuItems[4].getAttribute('href')).toEqual(
+      '/about'
     );
   });
 });
