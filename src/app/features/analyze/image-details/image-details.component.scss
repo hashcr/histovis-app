@@ -1,0 +1,27 @@
+.details-card {
+  margin-top: 1rem;
+
+  .label-title {
+    font-weight: 600;
+    color: var(--ion-color-primary);
+  }
+
+  ion-chip {
+    margin-right: 6px;
+    margin-top: 4px;
+  }
+
+  ion-textarea {
+    font-size: 0.9rem;
+    border-radius: 8px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+  }
+
+  .comment-input {
+    margin-top: 0.5rem;
+    ion-input {
+      font-size: 0.9rem;
+    }
+  }
+}

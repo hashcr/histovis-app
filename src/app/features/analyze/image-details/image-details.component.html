@@ -1,0 +1,53 @@
+<ion-card class="details-card">
+  <ion-card-header>
+    <ion-card-title>Details</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-list lines="none">
+      <ion-item>
+        <!-- Tags -->
+        <ion-label class="label-title">Tags</ion-label>
+        @for(tag of imageInfo()?.tagsList;track tag) {
+        <ion-chip>
+          <ion-label>{{ tag }}</ion-label>
+        </ion-chip>
+        }
+      </ion-item>
+      <!-- Notes -->
+      <ion-item class="ion-margin-top">
+        <ion-label>Notes</ion-label>
+      </ion-item>
+      <ion-textarea [value]="notes()" placeholder="Add your notes.." autoGrow="true"></ion-textarea>
+      <!-- Comments -->
+      <ion-item class="ion-margin-top">
+        <ion-label>Comments</ion-label>
+      </ion-item>
+
+      <div class="comment-section">
+        <ion-list>
+          @if(imageInfo()?.comments?.length) {
+          @for(c of imageInfo()!.comments ?? []; track c) {
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-icon name="person-circle-outline" style="font-size: 40px;"></ion-icon>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{ c.author }}</h3>
+              <p>{{ c.text }}</p>
+            </ion-label>
+          </ion-item>
+          }
+          }
+        </ion-list>
+
+        <ion-item lines="none" class="comment-input">
+          <ion-input placeholder="Add a comment.."></ion-input>
+          <ion-button fill="clear" color="primary" (click)="addComment()">
+            <ion-icon slot="icon-only" name="send-outine"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
