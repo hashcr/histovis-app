@@ -37,7 +37,7 @@ describe('ImageDetailsComponent', () => {
 
 @Component({
   standalone: true,
-  template: ` <app-image-comments [imageInfo]="image"></app-image-comments>`,
+  template: ` <app-image-details [imageInfo]="image"></app-image-details>`,
   imports: [ImageDetailsComponent],
 })
 class TestHostComponent {
