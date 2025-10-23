@@ -3,9 +3,9 @@ import { User } from "../models/user.model";
 import { StorageService } from "../services/storage/storage.service";
 
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-    private storage= inject(StorageService);
+    private storage = inject(StorageService);
     private _user = signal<User | null>(null);
 
     readonly user = this._user.asReadonly();

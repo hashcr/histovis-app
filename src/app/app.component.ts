@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonApp, IonSplitPane, IonMenu, IonContent, IonList, IonListHeader, IonMenuToggle, IonItem, IonIcon, IonLabel, IonRouterOutlet, IonRouterLink, IonAvatar, IonChip } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { cloudUploadSharp, cloudUploadOutline, buildSharp, buildOutline, settingsSharp, settingsOutline, logOutSharp, logOutOutline, searchSharp, searchOutline, homeSharp, homeOutline, closeCircleOutline, informationCircleOutline, informationCircleSharp, sendOutline, personCircleOutline } from 'ionicons/icons';
+import { cloudUploadSharp, cloudUploadOutline, buildSharp, buildOutline, settingsSharp, settingsOutline, logOutSharp, logOutOutline, searchSharp, searchOutline, homeSharp, homeOutline, closeCircleOutline, informationCircleOutline, informationCircleSharp, sendSharp, personCircleOutline, trashSharp } from 'ionicons/icons';
 import { User } from './core/models/user.model';
 import { AuthService } from './core/auth/auth.service';
 
@@ -40,8 +40,9 @@ export class AppComponent {
       'close-circle': closeCircleOutline,
       'information-circle-outline': informationCircleOutline,
       'information-circle-sharp': informationCircleSharp,
-      'send-outline': sendOutline,
+      'send-sharp': sendSharp,
       'person-circle-outline': personCircleOutline,
+      'trash-sharp': trashSharp
     });
   }
 

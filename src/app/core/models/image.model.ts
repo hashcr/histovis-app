@@ -14,4 +14,5 @@ export interface Comment {
   author: string;
   email: string;
   text: string;
+  date: Date;
 }
