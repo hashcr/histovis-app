@@ -18,7 +18,9 @@
       <ion-item class="ion-margin-top">
         <ion-label>Notes</ion-label>
       </ion-item>
-      <ion-textarea [value]="notes()" placeholder="Add your notes.." autoGrow="true"></ion-textarea>
+      <ion-textarea [formControl]="noteControl" placeholder="Add your notes.." autoGrow="true"></ion-textarea>
+      <ion-button expand="block" size="small" color="primary" class="ion-margin-top" (click)="saveNote()">Save
+        Note</ion-button>
       <!-- Comments -->
       <ion-item class="ion-margin-top">
         <ion-label>Comments</ion-label>
@@ -27,7 +29,7 @@
       <div class="comment-section">
         <ion-list>
           @if(imageInfo()?.comments?.length) {
-          @for(c of imageInfo()!.comments ?? []; track c) {
+          @for(c of imageInfo()!.comments ?? []; let index = $index; track c) {
           <ion-item>
             <ion-avatar slot="start">
               <ion-icon name="person-circle-outline" style="font-size: 40px;"></ion-icon>
@@ -35,16 +37,23 @@
             <ion-label>
               <h3>{{ c.author }}</h3>
               <p>{{ c.text }}</p>
+              <p>{{ c.date | date }}</p>
             </ion-label>
+            @if(isMine(c)) {
+              <ion-button slot="end" fill="clear" (click)="removeComment(index)">
+                <ion-icon name="trash-sharp"></ion-icon>
+              </ion-button>
+            }
           </ion-item>
           }
           }
         </ion-list>
 
         <ion-item lines="none" class="comment-input">
-          <ion-input placeholder="Add a comment.."></ion-input>
+          <ion-input placeholder="Add a comment.." [formControl]="commentControl"
+            (keyup.enter)="addComment()"></ion-input>
           <ion-button fill="clear" color="primary" (click)="addComment()">
-            <ion-icon slot="icon-only" name="send-outine"></ion-icon>
+            <ion-icon slot="icon-only" name="send-sharp" style="font-size: 24px;"></ion-icon>
           </ion-button>
         </ion-item>
       </div>
