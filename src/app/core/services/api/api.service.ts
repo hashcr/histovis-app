@@ -3,7 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { environment } from "src/environments/environment";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ApiService {
     private http = inject(HttpClient);
     private base = environment.authApiBaseUrl;
@@ -21,5 +21,13 @@ export class ApiService {
      */
     public get<T>(path: string): Observable<T> {
         return this.http.get<T>(`${this.base}/${path}`);
+    }
+
+    /** Send PUT request. 
+     * @template T - response type
+     * @template B - body type (defaults to unknown)
+     */
+    public put<T, B = unknown>(path: string, body: B): Observable<T> {
+        return this.http.put<T>(`${this.base}/${path}`, body);
     }
 }
