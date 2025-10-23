@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { Observable, tap } from 'rxjs';
-import { ImageGetResponse, ImageSearchResponse, ImageUploadRequest, ImageUploadResponse } from './image.service.types';
+import { ImageGetResponse, ImageSearchResponse, ImageUploadResponse, ImageUpdateResponse } from './image.service.types';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +10,12 @@ export class ImageService {
   
     private api = inject(ApiService);
 
+    update(payload: FormData, id: string): Observable<ImageUpdateResponse> {
+      return this.api.put<ImageUpdateResponse, FormData>(`images/${id}`, payload);
+    }
+
     upload(payload: FormData): Observable<ImageUploadResponse> {
-        return this.api.post<ImageUploadResponse, FormData>('images', payload);
+      return this.api.post<ImageUploadResponse, FormData>('images', payload);
     }
 
     getAll(): Observable<ImageSearchResponse> {

@@ -15,3 +15,6 @@ export interface ImageSearchResponse {
 export interface ImageGetResponse {
     image: ImageInfo;
 }
+
+export interface ImageUpdateResponse {
+}
