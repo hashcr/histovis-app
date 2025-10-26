@@ -38,16 +38,22 @@
             <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
           </ion-card-header>
 
+          <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
+            Drop Pin
+          </ion-button>
+
           <ion-card-content>
-            <div #osdViewer class="osd-viewer"></div>
+            <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-       <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
-        <ion-col size="12" size-lg="5">
-          <app-image-details [image]="imageInfo()"></app-image-details>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+      <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
+      <ion-col size="12" size-lg="5">
+        <app-image-details [image]="imageInfo()"></app-image-details>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div #container hidden>
+  </div>
 </ion-content>

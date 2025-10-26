@@ -8,12 +8,19 @@ import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { ImageDetailsComponent } from '../image-details/image-details.component';
+
+type Pin = {
+  id: string;
+  point: OpenSeadragon.Point;
+  zoom: number;
+}
+
 @Component({
   selector: 'app-image-analysis',
   templateUrl: './image-analysis.page.html',
   styleUrls: ['./image-analysis.page.scss'],
   standalone: true,
-  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol ],
+  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol],
 })
 export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services
@@ -26,10 +33,15 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   imageId = signal<string | null>(null);
   imageInfo = signal<ImageInfo | null>(null);
   private viewerReady = signal(false);
+  dropPinMode = signal(false);
 
   // OpenSeaDragon 
   private viewer: OpenSeadragon.Viewer | null = null;
   @ViewChild('osdViewer', { static: false }) viewerElement!: ElementRef<HTMLDivElement>;
+
+  // Data
+  private pinMap = new Map<string, Pin>();
+  private pinIdSequence = 0;
 
   constructor() {
 
@@ -71,6 +83,27 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
+  addPin(point: OpenSeadragon.Point | undefined, zoom: number) {
+    if (!point) return;
+
+    const htmlId = `dropped-pin-${++this.pinIdSequence}`;
+    const myNewPin = this.createNativePin(htmlId);
+    this.viewer?.addOverlay({
+      element: myNewPin,
+      location: point
+    });
+    this.pinMap.set(htmlId, { id: htmlId, point, zoom });
+    this.disableDropPinMode();
+  }
+
+  enableDropPinMode() {
+    this.dropPinMode.set(true);
+  }
+
+  disableDropPinMode() {
+    this.dropPinMode.set(false);
+  }
+
   initViewer(url: string) {
     if (!url || !this.viewerElement?.nativeElement) return;
 
@@ -89,8 +122,22 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         blendTime: 0.1,
         constrainDuringPan: true,
         maxZoomPixelRatio: 2,
+
+        gestureSettingsMouse: {
+          clickToZoom: false,
+          dblClickToZoom: true,
+        },
       })
     );
+
+    this.viewer.addHandler("canvas-click", (event: OpenSeadragon.CanvasClickEvent) => {
+      if (this.dropPinMode()) {
+        if (!event.quick) return; // ignore dragging release.
+        const viewportPoint = this.viewer?.viewport.pointFromPixel(event.position);
+        const zoom = this.viewer?.viewport.getZoom();
+        this.addPin(viewportPoint, zoom ?? 0);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -98,5 +145,34 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       this.viewer.destroy();
       this.viewer = null;
     }
+  }
+
+  private createNativePin(id: string) {
+    const wrapper = document.createElement('div');
+    wrapper.id = id;
+    wrapper.textContent = "📌";
+    wrapper.className = "pin-overlay";
+    const tracker = this.createMouseTracker(wrapper);
+    tracker.setTracking(true);
+    return wrapper;
+  }
+
+  private createMouseTracker(wrapper: HTMLElement): OpenSeadragon.MouseTracker {
+    return new OpenSeadragon.MouseTracker({
+      element: wrapper,
+
+      clickHandler: (event) => {
+        const id = wrapper.id;
+        const data = this.pinMap.get(id);
+        if(data) {
+          this.moveToPin(data);
+        }
+      }
+    });
+  }
+
+  private moveToPin(data: Pin) {
+    this.viewer?.viewport.panTo(data.point);
+    this.viewer?.viewport.zoomTo(data.zoom);
   }
 }

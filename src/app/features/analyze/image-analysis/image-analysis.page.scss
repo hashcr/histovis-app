@@ -46,3 +46,14 @@ ion-grid {
     height: fit-content;
   }
 }
+
+// Pins
+
+.pin-overlay {
+  position: absolute;
+  font-size: 26px;
+  cursor: pointer;
+  transform: translate(-50%, -100%);
+  z-index: 9999;
+  pointer-events: auto !important;
+}
