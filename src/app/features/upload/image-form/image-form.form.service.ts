@@ -16,7 +16,7 @@ export class ImageFormFormService {
         return this.fb.group({
             id: this.fb.control<string>({ value: img.id ?? '', disabled: true }),
             fileName: this.fb.control<string>(img.fileName ?? '', [Validators.required, Validators.maxLength(255)]),
-            url: this.fb.control<string>(img.url ?? '', [Validators.required, Validators.maxLength(2000)]),
+            url: this.fb.control<string>({ value: img.url ?? '', disabled: true }, [Validators.maxLength(2000)]),
             title: this.fb.control<string>(img.title ?? '', [Validators.required, Validators.maxLength(255)]),
             description: this.fb.control<string>(img.description ?? '', [Validators.required, Validators.maxLength(2000)]),
             tagsList: this.fb.array(tags),

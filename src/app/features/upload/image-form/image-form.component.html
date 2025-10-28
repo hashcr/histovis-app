@@ -17,7 +17,7 @@
     <ion-text color="danger" class="ion-padding-start">Filename is required</ion-text>
     }
 
-    <ion-item>
+    <ion-item [style.display]="form().controls.url.disabled ? 'none' : 'block'">
       <ion-label position="floating">Url</ion-label>
       <ion-input formControlName="url"></ion-input>
     </ion-item>
