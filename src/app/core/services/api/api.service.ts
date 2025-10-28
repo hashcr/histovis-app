@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
 import { environment } from "src/environments/environment";
@@ -18,9 +18,20 @@ export class ApiService {
 
     /** Send GET request.
      * @template T - response type
+     * @template P - params type (defaults to unknown)
      */
-    public get<T>(path: string): Observable<T> {
-        return this.http.get<T>(`${this.base}/${path}`);
+    public get<T, P = unknown>(path: string, params?: P): Observable<T> {
+        let httpParams = new HttpParams();
+
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                    httpParams = httpParams.set(key, String(value));
+                }
+            });
+        }
+
+        return this.http.get<T>(`${this.base}/${path}`, { params: httpParams });
     }
 
     /** Send PUT request. 
