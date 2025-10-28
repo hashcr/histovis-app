@@ -1,0 +1,13 @@
+<ion-item>
+  <ion-label position="floating">Tags</ion-label>
+  <ion-input class="tag-input" #tagInput type="text" placeholder="Add tag and press Enter"
+    (keyup.enter)="onTagEnter($event, tagInput)">
+  </ion-input>
+</ion-item>
+
+@for (tag of tagsArray().controls; track tag; let i = $index) {
+<ion-chip color="secondary">
+  {{ tag.value }}
+  <ion-icon name="close-circle" (click)="removeTag(i)"></ion-icon>
+</ion-chip>
+}
