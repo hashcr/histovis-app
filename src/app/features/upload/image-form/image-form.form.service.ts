@@ -28,13 +28,11 @@ export class ImageFormFormService {
         return form.get('tagsList') as FormArray;
     }
 
-    addTag(form: FormGroup<ImageForm>, tag: string) {
-        const tags = form.get('tagsList') as FormArray;
+    addTag(tags: FormArray<FormControl<string>>, tag: string) {
         tags.push(this.fb.control(tag, [Validators.maxLength(100)]));
     }
 
-    removeTag(form: FormGroup<ImageForm>, index: number) {
-        const tags = form.get('tagsList') as FormArray;
+    removeTag(tags: FormArray<FormControl<string>>, index: number) {
         tags.removeAt(index);
     }
 

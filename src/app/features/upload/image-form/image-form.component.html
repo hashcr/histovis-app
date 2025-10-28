@@ -38,6 +38,8 @@
       <ion-textarea formControlName="description"></ion-textarea>
     </ion-item>
 
+    <app-tags-selector [tagsArray]="tags"></app-tags-selector>
+
     <ion-item>
       <ion-label position="stacked">Image</ion-label>
       <input #fileInput type="file" accept="image/*" (change)="onFileChange($event)" />
@@ -45,20 +47,6 @@
 
     @if (preview()) {
     <ion-img [src]="preview()" class="ion-margin-top" style="border-radius:8px"></ion-img>
-    }
-
-    <ion-item>
-      <ion-label position="stacked">Tags</ion-label>
-      <ion-input class="tag-input" #tagInput type="text" placeholder="Add tag and press Enter"
-        (keyup.enter)="onTagEnter($event, tagInput)">
-      </ion-input>
-    </ion-item>
-
-    @for (tag of tags.controls; track tag; let i = $index) {
-    <ion-chip color="secondary">
-      {{ tag.value }}
-      <ion-icon name="close-circle" (click)="removeTag(i)"></ion-icon>
-    </ion-chip>
     }
 
     <ion-button expand="block" class="ion-margin-top" type="submit" [disabled]="form().invalid">

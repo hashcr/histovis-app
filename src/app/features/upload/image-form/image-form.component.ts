@@ -3,8 +3,9 @@ import { ImageFormFormService } from './image-form.form.service';
 import { ImageInfo } from '../../../core/models/image.model';
 import { FormArray } from '@angular/forms';
 import { ImageFormValue } from './image-form.types';
-import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonIcon, IonText, IonContent, IonImg, IonChip } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonText, IonContent, IonImg } from '@ionic/angular/standalone';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TagsSelectorComponent } from '../../shared/components/tags-selector/tags-selector.component';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './image-form.component.html',
   styleUrls: ['./image-form.component.scss'],
   standalone: true,
-  imports: [IonItem, IonLabel, IonInput, IonTextarea, ReactiveFormsModule, IonButton, IonIcon, IonText, IonContent, IonImg, IonChip],
+  imports: [IonItem, IonLabel, IonInput, IonTextarea, ReactiveFormsModule, IonButton, IonText, IonContent, IonImg, TagsSelectorComponent],
 })
 export class ImageFormComponent {
 
@@ -51,22 +52,6 @@ export class ImageFormComponent {
     });
   }
 
-  get tags(): FormArray {
-    return this.imageFormService.tags(this.form());
-  }
-
-  addTag(tag: string | number | null | undefined) {
-    if (!tag) return;
-    const text = `${tag}`;
-    if (text.trim()) {
-      this.imageFormService.addTag(this.form(), text.trim());
-    }
-  }
-
-  removeTag(index: number) {
-    this.imageFormService.removeTag(this.form(), index);
-  }
-
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -89,23 +74,13 @@ export class ImageFormComponent {
     this.fileInput.nativeElement.value = '';
   }
 
-  async onTagEnter(eventx: Event, tagInput: IonInput) {
-    const event = eventx as KeyboardEvent;
-    event.preventDefault();     // stop native submit
-    event.stopPropagation();    // stop bubbling to the form
-
-    const inputEl = await tagInput.getInputElement();
-    const value = inputEl.value?.trim() ?? '';
-    if (!value) return;
-
-    this.addTag(value);
-    inputEl.value = '';         // clear visually
+  get tags(): FormArray {
+    return this.imageFormService.tags(this.form());
   }
 
   maybeBlockEnter(evx: Event) {
     const ev = evx as KeyboardEvent;
     const target = ev.target as HTMLElement | null;
-    // add a class on your ion-input wrapper, e.g., class="tag-input"
     if (target && target.closest('.tag-input')) {
       ev.preventDefault();
       ev.stopPropagation();
