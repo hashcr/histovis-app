@@ -10,7 +10,7 @@ describe('ImageSearchPage', () => {
   let notificactionsServiceMock: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    imageSearchServiceMock = jasmine.createSpyObj('ImageService', ['getAllImages']);
+    imageSearchServiceMock = jasmine.createSpyObj('ImageService', ['search']);
     notificactionsServiceMock = jasmine.createSpyObj('NotificationService', ['showError']);
     
     TestBed.configureTestingModule({

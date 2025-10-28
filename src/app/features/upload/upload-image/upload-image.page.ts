@@ -8,7 +8,6 @@ import { ImageFormValue } from '../image-form/image-form.types';
 import { createDefaultImageInfo } from './utils';
 import { ImageService } from '../../shared/services/image.service';
 import { UploadImageFormValueService } from './upload-image.form.value.service';
-import { ImageFormFormService } from '../image-form/image-form.form.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 
 @Component({
@@ -36,7 +35,7 @@ export class UploadImagePage {
     this.imageService.upload(request).subscribe({
       next: async () => {
         this.resetTrigger.set(true);
-        await this.router.navigateByUrl('/upload', { replaceUrl: true });
+        //await this.router.navigateByUrl('/upload', { replaceUrl: true });
         await this.notifications.showSuccess('Image uploaded successfully.');
       },
       error: async (err) => {
