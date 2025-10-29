@@ -11,21 +11,22 @@
     </ion-toolbar>
   </ion-header>
 
+  @if(!imageId()) {
   <!-- Search -->
   <ion-card class="search-card">
     <ion-card-content>
       <ion-item>
         <ion-label position="stacked">Image ID</ion-label>
-        <ion-input [ngModel]="imageId()" (ngModelChange)="imageId.set($event)">
+        <ion-input [formControl]="searchImageId" placeholder="Enter Image ID">
         </ion-input>
       </ion-item>
 
-      <ion-button expand="block" class="ion-margin-top" (click)="retrieveImage()">
+      <ion-button expand="block" class="ion-margin-top" (click)="searchImage()">
         Retrieve Image
       </ion-button>
     </ion-card-content>
   </ion-card>
-
+  }
   <!-- Viewer-->
   <ion-grid fixed>
     <ion-row>

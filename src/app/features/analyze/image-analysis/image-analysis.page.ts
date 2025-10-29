@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import OpenSeadragon from 'openseadragon';
 import { ActivatedRoute } from '@angular/router';
@@ -20,7 +20,7 @@ type Pin = {
   templateUrl: './image-analysis.page.html',
   styleUrls: ['./image-analysis.page.scss'],
   standalone: true,
-  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol],
+  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol, ReactiveFormsModule],
 })
 export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services
@@ -43,7 +43,17 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private pinMap = new Map<string, Pin>();
   private pinIdSequence = 0;
 
+  // Form Controls
+  searchImageId = new FormControl<string>('');
+
   constructor() {
+
+    effect(() => {
+      const id = this.imageId();
+      if (id) {
+        this.retrieveImage();
+      }
+    });
 
     effect(() => {
       const info = this.imageInfo();
@@ -64,7 +74,6 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       const id = params.get('id');
       if (id) {
         this.imageId.set(id);
-        this.retrieveImage();
       }
     });
   }
@@ -144,6 +153,13 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     if (this.viewer) {
       this.viewer.destroy();
       this.viewer = null;
+    }
+  }
+
+  searchImage() {
+    const id = this.searchImageId.value?.trim();
+    if (id) {
+      this.imageId.set(id);
     }
   }
 
