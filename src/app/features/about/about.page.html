@@ -47,10 +47,83 @@
               <a href="https://www.histovis.app" target="_blank">histovis.app</a>
             </ion-label>
           </ion-item>
+          <ion-item>
+            <ion-toggle justify="start" [enableOnOffLabels]="true" [(ngModel)]="objectivesToggledOn">Show Original Project Objectives</ion-toggle>
+          </ion-item>
         </ion-list>
       </div>
     </ion-card-content>
   </ion-card>
+
+  <div [hidden]="!objectivesToggledOn()">
+  <!-- Objetivo General -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Objetivo General</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        Desarrollar una plataforma web extensible para la visualización, categorización,
+        búsqueda y análisis de imágenes de laminillas para estudios de histoquímica e
+        inmunohistoquímica.
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Objetivos Específicos -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Objetivos Específicos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="full">
+
+        <ion-item>
+          <ion-badge slot="start" color="primary">O1</ion-badge>
+          <ion-label>
+            Crear un corpus digital de imágenes de laminillas de muestras de tejido.
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-badge slot="start" color="primary">O2</ion-badge>
+          <ion-label>
+            Implementar un módulo de carga, búsqueda, categorización, anotación
+            manual y visualización de laminillas digitalizadas en alta resolución con soporte
+            para acercamientos y desplazamiento sobre la imagen.
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-badge slot="start" color="primary">O3</ion-badge>
+          <ion-label>
+            Diseñar un módulo de herramientas extensible que permita realizar análisis o
+            transformaciones sobre las imágenes o secciones de las mismas.
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-badge slot="start" color="primary">O4</ion-badge>
+          <ion-label>
+            Integrar al módulo de herramientas al menos una funcionalidad de inteligencia
+            artificial con un modelo de aprendizaje automático preentrenado para el análisis
+            de expresión de proteínas mediante la técnica de inmunohistoquímica utilizando
+            laminillas digitalizadas.
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-badge slot="start" color="primary">O5</ion-badge>
+          <ion-label>
+            Evaluar la pertinencia y aplicabilidad de la plataforma mediante un caso de
+            estudio y un cuestionario estandarizado.
+          </ion-label>
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  </div>
 
   <ion-footer class="ion-text-center">
     <ion-text color="medium" class="footer-text">
