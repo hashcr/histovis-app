@@ -34,6 +34,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   imageInfo = signal<ImageInfo | null>(null);
   private viewerReady = signal(false);
   dropPinMode = signal(false);
+  imageLoaded = signal(false);
 
   // OpenSeaDragon 
   private viewer: OpenSeadragon.Viewer | null = null;
@@ -147,6 +148,8 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         this.addPin(viewportPoint, zoom ?? 0);
       }
     });
+
+    this.imageLoaded.set(true);
   }
 
   ngOnDestroy() {

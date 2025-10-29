@@ -28,33 +28,35 @@
   </ion-card>
   }
   <!-- Viewer-->
-  <ion-grid fixed>
-    <ion-row>
-      <!-- Viewer (Left on Desktop / Top on Mobile) -->
-      <ion-col size="12" size-lg="7">
-        <ion-card class="viewer-card">
+  <ion-content [style.display]="imageLoaded() ? 'block' : 'none'">
+    <ion-grid fixed>
+      <ion-row>
+        <!-- Viewer (Left on Desktop / Top on Mobile) -->
+        <ion-col size="12" size-lg="7">
+          <ion-card class="viewer-card">
 
-          <ion-card-header>
-            <ion-card-title>{{ imageInfo()?.title }}</ion-card-title>
-            <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
-          </ion-card-header>
+            <ion-card-header>
+              <ion-card-title>{{ imageInfo()?.title }}</ion-card-title>
+              <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
+            </ion-card-header>
 
-          <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
-            Drop Pin
-          </ion-button>
+            <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
+              Drop Pin
+            </ion-button>
 
-          <ion-card-content>
-            <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+            <ion-card-content>
+              <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
 
-      <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
-      <ion-col size="12" size-lg="5">
-        <app-image-details [image]="imageInfo()"></app-image-details>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
+        <ion-col size="12" size-lg="5">
+          <app-image-details [image]="imageInfo()"></app-image-details>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
   <div #container hidden>
   </div>
 </ion-content>
