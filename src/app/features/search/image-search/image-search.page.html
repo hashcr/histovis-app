@@ -5,13 +5,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Search Images</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-grid class="ion-no-padding ion-margin-bottom">
+    <ion-row class="ion-align-items-center">
+      <ion-col size="12" size-md="6">
+        <ion-searchbar
+          placeholder="Search images..."
+          (ionInput)="onSearch($event)">
+        </ion-searchbar>
+      </ion-col>
 
-  <ion-searchbar placeholder="Search images..." (ionInput)="onSearch($event)"></ion-searchbar>
+      <ion-col size="12" size-md="6">
+        <app-tags-selector [tagsArray]="tagsArray"></app-tags-selector>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <ion-grid>
     <ion-row>

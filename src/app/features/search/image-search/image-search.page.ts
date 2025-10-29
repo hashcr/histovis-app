@@ -1,38 +1,48 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { ImageCardComponent } from 'src/app/features/search/image-card/image-card.component'
+import { ImageSearchRequest } from '../../shared/services/image.service.types';
+import { TagsSelectorComponent } from '../../shared/components/tags-selector/tags-selector.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-image-search',
   templateUrl: './image-search.page.html',
   styleUrls: ['./image-search.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonGrid, IonRow, IonCol, CommonModule, FormsModule, ImageCardComponent]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonGrid, IonRow, IonCol, CommonModule, ReactiveFormsModule, ImageCardComponent, TagsSelectorComponent]
 })
 export class ImageSearchPage {
   // Services
   private imageService = inject(ImageService);
   private notifications = inject(NotificationService);
 
+  // Form controls
+  tagsArray = new FormArray<FormControl<string>>([]);
+
   // Signals
 
   filteredImages = signal<ImageInfo[]>([]);
   searchTerm = signal<string>('');
+  tagsChanges = toSignal(this.tagsArray.valueChanges, { initialValue: [] });
 
   constructor() {
     effect(() => {
       const term = this.searchTerm().toLowerCase();
-      this.retrieveImages();
+      const tagsComp = this.tagsChanges();
+      const tagsList =  tagsComp.filter(tag => tag).map(tag => tag!.toLowerCase());
+      const request = this.createSearchRequest(term, tagsList);
+      this.retrieveImages(request);
     });
   }
 
-  async retrieveImages() {
-    this.imageService.search(this.createSearchRequest()).subscribe({
+  async retrieveImages(request: ImageSearchRequest) {
+    this.imageService.search(request).subscribe({
       next: async (imagesResponse) => {
         this.filteredImages.set(imagesResponse.images);
       },
@@ -42,10 +52,10 @@ export class ImageSearchPage {
     });
   }
 
-  createSearchRequest() {
+  createSearchRequest(term: string, tagsList: string[]) {
     return {
-      query: this.searchTerm(),
-      tagsList: []
+      query: term,
+      tagsList: tagsList
     };
   }
 
