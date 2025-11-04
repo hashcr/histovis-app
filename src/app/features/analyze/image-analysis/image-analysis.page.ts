@@ -8,12 +8,8 @@ import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { ImageDetailsComponent } from '../image-details/image-details.component';
-
-type Pin = {
-  id: string;
-  point: OpenSeadragon.Point;
-  zoom: number;
-}
+import { Pin } from 'src/app/core/models/image.model';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 @Component({
   selector: 'app-image-analysis',
@@ -28,6 +24,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private imageService = inject(ImageService);
   private notifications = inject(NotificationService);
   private ngZone = inject(NgZone);
+  private authService = inject(AuthService);
 
   // Signals
   imageId = signal<string | null>(null);
@@ -102,8 +99,30 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       element: myNewPin,
       location: point
     });
-    this.pinMap.set(htmlId, { id: htmlId, point, zoom });
+    this.pinMap.set(htmlId, this.createPinData(htmlId, point.x, point.y, zoom));
     this.disableDropPinMode();
+  }
+
+  private createPinData(id: string, x: number, y: number, zoom: number): Pin {
+    return {
+      public: false,
+      temporal: false,
+      email: this.getCurrentUserEmail(),
+      id,
+      x,
+      y,
+      zoom,
+      text: ''
+    };
+  }
+
+  private createOpenSeadragonPoint(x: number, y: number): OpenSeadragon.Point {
+    return new OpenSeadragon.Point(x, y);
+  }
+
+  private getCurrentUserEmail(): string {
+    const user = this.authService.user();
+    return user?.email || '';
   }
 
   enableDropPinMode() {
@@ -191,7 +210,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private moveToPin(data: Pin) {
-    this.viewer?.viewport.panTo(data.point);
+    this.viewer?.viewport.panTo(this.createOpenSeadragonPoint(data.x, data.y));
     this.viewer?.viewport.zoomTo(data.zoom);
   }
 }

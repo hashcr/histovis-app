@@ -4,17 +4,19 @@ import { ImageService } from '../../shared/services/image.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { provideRouter, withComponentInputBinding  } from '@angular/router';
 import { NgZone } from '@angular/core';
+import { AuthService } from 'src/app/core/auth/auth.service';
 
 describe('ImageAnalysisPage', () => {
   let component: ImageAnalysisPage;
   let fixture: ComponentFixture<ImageAnalysisPage>;
   let imageSearchServiceMock: jasmine.SpyObj<ImageService>;
   let notificactionsServiceMock: jasmine.SpyObj<NotificationService>;
+  let authServiceMock: jasmine.SpyObj<AuthService>;
 
   beforeEach(() => {
     imageSearchServiceMock = jasmine.createSpyObj('ImageService', ['get']);
     notificactionsServiceMock = jasmine.createSpyObj('NotificationService', ['showError']);
-
+    authServiceMock = jasmine.createSpyObj('AuthService', ['user']);
     TestBed.configureTestingModule({
       imports: [ImageAnalysisPage],
       providers: [

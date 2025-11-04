@@ -16,3 +16,14 @@ export interface Comment {
   text: string;
   date: Date;
 }
+
+export interface Pin {
+  public: boolean;
+  temporal: boolean;
+  email: string;
+  id: string;
+  x: number;
+  y: number;
+  zoom: number;
+  text: string;
+}
