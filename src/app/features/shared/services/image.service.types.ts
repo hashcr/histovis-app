@@ -1,4 +1,4 @@
-import { ImageInfo } from "src/app/core/models/image.model";
+import { ImageInfo, Pin } from "src/app/core/models/image.model";
 
 export interface ImageUploadRequest {
     image: ImageInfo;
@@ -19,6 +19,10 @@ export interface ImageSearchResponse {
 
 export interface ImageGetResponse {
     image: ImageInfo;
+}
+
+export interface ImageGetPinsResponse {
+    pins: Pin[];
 }
 
 export interface ImageUpdateResponse {

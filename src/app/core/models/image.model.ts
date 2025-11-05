@@ -19,9 +19,10 @@ export interface Comment {
 
 export interface Pin {
   public: boolean;
-  temporal: boolean;
+  temporal: boolean | undefined;
   email: string;
   id: string;
+  sequence_id: number;
   x: number;
   y: number;
   zoom: number;

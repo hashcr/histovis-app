@@ -43,6 +43,9 @@
             <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
               Drop Pin
             </ion-button>
+            <ion-button expand="block" (click)="loadPins()">
+              Load Pins
+            </ion-button>
 
             <ion-card-content>
               <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>

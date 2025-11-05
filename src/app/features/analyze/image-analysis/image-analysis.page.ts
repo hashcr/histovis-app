@@ -90,25 +90,55 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  addPin(point: OpenSeadragon.Point | undefined, zoom: number) {
+  addPin(point: OpenSeadragon.Point | undefined, zoom: number, htmlId: string, sequenceId: number) {
     if (!point) return;
 
-    const htmlId = `dropped-pin-${++this.pinIdSequence}`;
     const myNewPin = this.createNativePin(htmlId);
     this.viewer?.addOverlay({
       element: myNewPin,
       location: point
     });
-    this.pinMap.set(htmlId, this.createPinData(htmlId, point.x, point.y, zoom));
+    const pinData = this.createPinData(htmlId, point.x, point.y, zoom, sequenceId);
+    this.pinMap.set(htmlId, pinData);
     this.disableDropPinMode();
   }
 
-  private createPinData(id: string, x: number, y: number, zoom: number): Pin {
+  loadPins() {
+    const id = this.imageId();
+    if (!id) return;
+
+    this.imageService.getPins(id).subscribe({
+      next: (response) => {
+        response.pins.forEach(pin => {
+          this.addPin(this.createOpenSeadragonPoint(pin.x, pin.y), pin.zoom, pin.id, pin.sequence_id);
+          this.setNewPinIdSequence(pin.sequence_id);
+        });
+      }
+    });
+  }
+
+  private setNewPinIdSequence(seq: number) {
+    if (seq > this.pinIdSequence) {
+      this.pinIdSequence = seq;
+    }
+  }
+
+  private incrementIdSequence() {
+    this.pinIdSequence += 1;
+  }
+
+  private generatePindId(): string {
+    this.incrementIdSequence();
+    return `pin-id-${this.pinIdSequence}`;
+  }
+
+  private createPinData(id: string, x: number, y: number, zoom: number, sequenceId?: number): Pin {
     return {
       public: false,
       temporal: false,
       email: this.getCurrentUserEmail(),
       id,
+      sequence_id: sequenceId ?? this.pinIdSequence,
       x,
       y,
       zoom,
@@ -164,7 +194,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         if (!event.quick) return; // ignore dragging release.
         const viewportPoint = this.viewer?.viewport.pointFromPixel(event.position);
         const zoom = this.viewer?.viewport.getZoom();
-        this.addPin(viewportPoint, zoom ?? 0);
+        this.addPin(viewportPoint, zoom ?? 0, this.generatePindId(), this.pinIdSequence);
       }
     });
 
