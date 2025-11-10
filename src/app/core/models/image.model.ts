@@ -19,7 +19,7 @@ export interface Comment {
 
 export interface Pin {
   isPublic: boolean;
-  temporal: boolean | undefined;
+  isTemporal: boolean | undefined;
   email: string;
   id: string;
   sequence_id: number;
