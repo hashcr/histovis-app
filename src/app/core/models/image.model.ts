@@ -18,7 +18,7 @@ export interface Comment {
 }
 
 export interface Pin {
-  public: boolean;
+  isPublic: boolean;
   temporal: boolean | undefined;
   email: string;
   id: string;
