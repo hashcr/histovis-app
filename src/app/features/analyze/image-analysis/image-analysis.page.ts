@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { PopoverController, IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import OpenSeadragon from 'openseadragon';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../../shared/services/image.service';
@@ -10,6 +10,7 @@ import { NotificationService } from 'src/app/core/services/notifications/notific
 import { ImageDetailsComponent } from '../image-details/image-details.component';
 import { Pin } from 'src/app/core/models/image.model';
 import { AuthService } from 'src/app/core/auth/auth.service';
+import { PinPopoverComponent } from '../pin-popover/pin-popover.component';
 
 @Component({
   selector: 'app-image-analysis',
@@ -25,6 +26,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private notifications = inject(NotificationService);
   private ngZone = inject(NgZone);
   private authService = inject(AuthService);
+  private popoverController = inject(PopoverController);
 
   // Signals
   imageId = signal<string | null>(null);
@@ -105,7 +107,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  addPin(point: OpenSeadragon.Point | undefined, zoom: number, htmlId: string, sequenceId: number) {
+  addPin(point: OpenSeadragon.Point | undefined, zoom: number, htmlId: string, sequenceId: number, text: string, isPublic: boolean = true, isTemporal: boolean = false, email: string = this.getCurrentUserEmail()) {
     if (!point) return;
 
     const myNewPin = this.createNativePin(htmlId);
@@ -113,7 +115,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       element: myNewPin,
       location: point
     });
-    const pinData = this.createPinData(htmlId, point.x, point.y, zoom, sequenceId);
+    const pinData = this.createPinData(htmlId, point.x, point.y, zoom, sequenceId, text, isPublic, isTemporal, email);
     this.pinMap.set(htmlId, pinData);
     this.disableDropPinMode();
   }
@@ -125,7 +127,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     this.imageService.getPins(id).subscribe({
       next: (response) => {
         response.pins.forEach(pin => {
-          this.addPin(this.createOpenSeadragonPoint(pin.x, pin.y), pin.zoom, pin.id, pin.sequence_id);
+          this.addPin(this.createOpenSeadragonPoint(pin.x, pin.y), pin.zoom, pin.id, pin.sequence_id, pin.text, pin.isPublic, pin.isTemporal, pin.email);
           this.setNewPinIdSequence(pin.sequence_id);
         });
       }
@@ -167,17 +169,17 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     return `pin-id-${this.pinIdSequence}`;
   }
 
-  private createPinData(id: string, x: number, y: number, zoom: number, sequenceId?: number): Pin {
+  private createPinData(id: string, x: number, y: number, zoom: number, sequenceId: number, text: string, isPublic: boolean, isTemporal: boolean, email: string): Pin {
     return {
-      public: false,
-      temporal: false,
-      email: this.getCurrentUserEmail(),
+      isPublic,
+      isTemporal,
+      email,
       id,
-      sequence_id: sequenceId ?? this.pinIdSequence,
+      sequence_id: sequenceId,
       x,
       y,
       zoom,
-      text: ''
+      text
     };
   }
 
@@ -191,7 +193,10 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   }
 
   enableDropPinMode() {
-    this.dropPinMode.set(true);
+    this.showingPins.set(true);
+    setTimeout(() => {
+      this.dropPinMode.set(true);      
+    }, 500); // Delay in milliseconds
   }
 
   disableDropPinMode() {
@@ -229,7 +234,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         if (!event.quick) return; // ignore dragging release.
         const viewportPoint = this.viewer?.viewport.pointFromPixel(event.position);
         const zoom = this.viewer?.viewport.getZoom();
-        this.addPin(viewportPoint, zoom ?? 0, this.generatePindId(), this.pinIdSequence);
+        this.addPin(viewportPoint, zoom ?? 0, this.generatePindId(), this.pinIdSequence, '', false, false, this.getCurrentUserEmail());
       }
     });
 
@@ -273,8 +278,33 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         if (data) {
           this.moveToPin(data);
         }
-      }
+      },
+      dblClickHandler: (event) => {
+        this.openPinDialog(wrapper.id, event.originalEvent);
+      },
     });
+  }
+
+  private openPinDialog(pinId: string, event: Event) {
+    const pinData = this.pinMap.get(pinId);
+    if (!pinData) return;
+
+    this.presentPopover(event, pinData);
+  }
+
+  async presentPopover(e: Event, pinData: Pin) {
+    const popover = await this.popoverController.create({
+      component: PinPopoverComponent,
+      event: e,
+      componentProps: {
+        pinData: pinData
+      },
+    });
+
+    await popover.present();
+
+    const { role } = await popover.onDidDismiss();
+    console.log(`Popover dismissed with role: ${role}`);
   }
 
   private moveToPin(data: Pin) {

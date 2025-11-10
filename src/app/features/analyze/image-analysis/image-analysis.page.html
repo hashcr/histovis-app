@@ -43,7 +43,7 @@
             <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
               Drop Pin
             </ion-button>
-            <ion-toggle (click)="showPinsToggle()">
+            <ion-toggle [checked]="showingPins()" (ionChange)="showPinsToggle()">
               Show Pins
             </ion-toggle>
 
