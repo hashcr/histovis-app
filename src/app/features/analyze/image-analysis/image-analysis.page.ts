@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import OpenSeadragon from 'openseadragon';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../../shared/services/image.service';
@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/core/auth/auth.service';
   templateUrl: './image-analysis.page.html',
   styleUrls: ['./image-analysis.page.scss'],
   standalone: true,
-  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol, ReactiveFormsModule],
+  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol, ReactiveFormsModule],
 })
 export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services
@@ -32,6 +32,8 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private viewerReady = signal(false);
   dropPinMode = signal(false);
   imageLoaded = signal(false);
+  showingPins = signal(false);
+  pinsLoaded = false;
 
   // OpenSeaDragon 
   private viewer: OpenSeadragon.Viewer | null = null;
@@ -59,6 +61,19 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
 
       if (ready && info?.url) {
         this.initViewer(info.url);
+      }
+    });
+
+    effect(() => {
+      const showingPins = this.showingPins();
+      if (showingPins) {
+        if (!this.pinsLoaded) {
+          this.loadPins();
+          this.pinsLoaded = true;
+        }
+        this.showAllPins();
+      } else {
+        this.hideAllPins();
       }
     });
   }
@@ -114,6 +129,26 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
           this.setNewPinIdSequence(pin.sequence_id);
         });
       }
+    });
+  }
+
+  showPinsToggle() {
+    this.showingPins.set(!this.showingPins());
+  }
+
+  private hideAllPins() {
+    if (!this.viewer) return;
+
+    this.overlays.forEach(o => {
+      o.style.display = 'none';
+    });
+  }
+
+  private showAllPins() {
+    if (!this.viewer) return;
+
+    this.overlays.forEach(o => {
+      o.style.display = 'block';
     });
   }
 
@@ -215,6 +250,8 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  overlays: HTMLElement[] = [];
+
   private createNativePin(id: string) {
     const wrapper = document.createElement('div');
     wrapper.id = id;
@@ -222,6 +259,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     wrapper.className = "pin-overlay";
     const tracker = this.createMouseTracker(wrapper);
     tracker.setTracking(true);
+    this.overlays.push(wrapper);
     return wrapper;
   }
 
@@ -232,7 +270,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       clickHandler: (event) => {
         const id = wrapper.id;
         const data = this.pinMap.get(id);
-        if(data) {
+        if (data) {
           this.moveToPin(data);
         }
       }
