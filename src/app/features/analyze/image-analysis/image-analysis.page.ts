@@ -303,12 +303,25 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
 
     await popover.present();
 
-    const { role } = await popover.onDidDismiss();
-    console.log(`Popover dismissed with role: ${role}`);
+    const { data, role } = await popover.onDidDismiss();
+    if (role === 'save') {
+      this.persistPin(data.pinData);
+    }
   }
 
   private moveToPin(data: Pin) {
     this.viewer?.viewport.panTo(this.createOpenSeadragonPoint(data.x, data.y));
     this.viewer?.viewport.zoomTo(data.zoom);
+  }
+
+  // Persist pin changes to backend
+  private persistPin(pinData: Pin) {
+    const id = this.imageId();
+    if (!id) return; 
+    this.imageService.addPin(id, pinData).subscribe({
+      next: (response) => {
+        this.notifications.showSuccess('Pin updated successfully');
+      }
+    });
   }
 }
