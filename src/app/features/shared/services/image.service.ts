@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api/api.service';
 import { Observable, tap } from 'rxjs';
-import { ImageGetResponse, ImageSearchResponse, ImageUploadResponse, ImageUpdateResponse, ImageSearchRequest, ImageGetPinsResponse } from './image.service.types';
+import { ImageGetResponse, ImageSearchResponse, ImageUploadResponse, ImageUpdateResponse, ImageSearchRequest, ImageGetPinsResponse, AddPinResponse, AddPinRequest } from './image.service.types';
 import { Pin } from 'src/app/core/models/image.model';
 
 @Injectable({
@@ -29,5 +29,9 @@ export class ImageService {
 
     getPins(imageId: string): Observable<ImageGetPinsResponse> {
       return this.api.get<ImageGetPinsResponse>(`images/${imageId}/pins`);
+    }
+
+    addPin(imageId: string, pin: Pin): Observable<AddPinResponse> {
+      return this.api.post<AddPinResponse, AddPinRequest>(`images/${imageId}/pins`, { pin });
     }
 }

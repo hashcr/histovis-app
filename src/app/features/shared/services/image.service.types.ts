@@ -27,3 +27,11 @@ export interface ImageGetPinsResponse {
 
 export interface ImageUpdateResponse {
 }
+
+export interface AddPinRequest {
+    pin: Pin;
+}
+
+export interface AddPinResponse {
+    pin: Pin;
+}
