@@ -1,4 +1,4 @@
-import { Component, Input, input, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   IonHeader,
@@ -10,7 +10,8 @@ import {
   IonLabel,
   IonToggle,
   IonContent,
-  IonTextarea
+  IonTextarea,
+  PopoverController
 } from '@ionic/angular/standalone';
 import { Pin } from 'src/app/core/models/image.model';
 
@@ -36,6 +37,9 @@ import { Pin } from 'src/app/core/models/image.model';
 export class PinPopoverComponent implements OnInit {
   @Input() pinData!: Pin;
 
+  // Services
+  private popoverController = inject(PopoverController);
+
   isPersistant = signal(false);
   isPublic = signal(false);
 
@@ -49,7 +53,13 @@ export class PinPopoverComponent implements OnInit {
   }
 
   onSave() {
-    // Logic to save pin details
+    this.pinData.text = this.noteText.value ?? '';
+    this.pinData.isTemporal = !this.isPersistant();
+    this.pinData.isPublic = this.isPublic();
+
+    this.popoverController.dismiss({
+      pinData: this.pinData
+    }, 'save');
   }
 
   togglePersistant() {
