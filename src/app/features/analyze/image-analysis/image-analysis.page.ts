@@ -107,7 +107,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  addPin(point: OpenSeadragon.Point | undefined, zoom: number, htmlId: string, sequenceId: number, text: string, isPublic: boolean = true, isTemporal: boolean = false, email: string = this.getCurrentUserEmail()) {
+  addPin(point: OpenSeadragon.Point | undefined, zoom: number, htmlId: string, sequenceId: number, text: string, isPublic: boolean = true, isTemporal: boolean = false, email: string = this.getCurrentUserEmail(), persisted: boolean = false) {
     if (!point) return;
 
     const myNewPin = this.createNativePin(htmlId);
@@ -115,7 +115,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       element: myNewPin,
       location: point
     });
-    const pinData = this.createPinData(htmlId, point.x, point.y, zoom, sequenceId, text, isPublic, isTemporal, email);
+    const pinData = this.createPinData(htmlId, point.x, point.y, zoom, sequenceId, text, isPublic, isTemporal, email, persisted);
     this.pinMap.set(htmlId, pinData);
     this.disableDropPinMode();
   }
@@ -127,7 +127,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     this.imageService.getPins(id).subscribe({
       next: (response) => {
         response.pins.forEach(pin => {
-          this.addPin(this.createOpenSeadragonPoint(pin.x, pin.y), pin.zoom, pin.id, pin.sequence_id, pin.text, pin.isPublic, pin.isTemporal, pin.email);
+          this.addPin(this.createOpenSeadragonPoint(pin.x, pin.y), pin.zoom, pin.id, pin.sequence_id, pin.text, pin.isPublic, pin.isTemporal, pin.email, true);
           this.setNewPinIdSequence(pin.sequence_id);
         });
       }
@@ -169,7 +169,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     return `pin-id-${this.pinIdSequence}`;
   }
 
-  private createPinData(id: string, x: number, y: number, zoom: number, sequenceId: number, text: string, isPublic: boolean, isTemporal: boolean, email: string): Pin {
+  private createPinData(id: string, x: number, y: number, zoom: number, sequenceId: number, text: string, isPublic: boolean, isTemporal: boolean, email: string, persisted: boolean): Pin {
     return {
       isPublic,
       isTemporal,
@@ -179,7 +179,8 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       x,
       y,
       zoom,
-      text
+      text,
+      persisted,
     };
   }
 
@@ -234,7 +235,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
         if (!event.quick) return; // ignore dragging release.
         const viewportPoint = this.viewer?.viewport.pointFromPixel(event.position);
         const zoom = this.viewer?.viewport.getZoom();
-        this.addPin(viewportPoint, zoom ?? 0, this.generatePindId(), this.pinIdSequence, '', false, false, this.getCurrentUserEmail());
+        this.addPin(viewportPoint, zoom ?? 0, this.generatePindId(), this.pinIdSequence, '', false, false, this.getCurrentUserEmail(), false);
       }
     });
 
@@ -317,10 +318,39 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Persist pin changes to backend
   private persistPin(pinData: Pin) {
     const id = this.imageId();
-    if (!id) return; 
-    this.imageService.addPin(id, pinData).subscribe({
+    if (!id) return;
+
+    if (pinData.persisted) {
+      this.updatePin(id, pinData);
+      return;
+    }
+
+    if (!pinData.isTemporal) {
+      this.savePin(id, pinData);
+    }
+  }
+
+  private updatePin(imageId: string, pinData: Pin) {
+    this.imageService.updatePin(imageId, pinData).subscribe({
       next: (response) => {
+        this.pinMap.set(pinData.id, pinData);
         this.notifications.showSuccess('Pin updated successfully');
+      },
+      error: (err) => {
+        this.notifications.showError(err?.error?.message || 'Failed to update pin');
+      }
+    });
+  }
+
+  private savePin(imageId: string, pinData: Pin) {
+    this.imageService.addPin(imageId, pinData).subscribe({
+      next: (response) => {
+        pinData.persisted = true;
+        this.pinMap.set(pinData.id, pinData);
+        this.notifications.showSuccess('Pin saved successfully');
+      },
+      error: (err) => {
+        this.notifications.showError(err?.error?.message || 'Failed to save pin');
       }
     });
   }
