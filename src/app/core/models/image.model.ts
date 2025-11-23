@@ -27,4 +27,5 @@ export interface Pin {
   y: number;
   zoom: number;
   text: string;
+  persisted?: boolean;
 }
