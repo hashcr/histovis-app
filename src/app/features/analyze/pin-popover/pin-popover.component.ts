@@ -47,9 +47,15 @@ export class PinPopoverComponent implements OnInit {
   noteText = new FormControl<string>('');
 
   ngOnInit(): void {
+    const isTemp = this.pinData.isTemporal;
+    this.isPersistant.set(!isTemp);
     const isPub = this.pinData.isPublic;
     this.isPublic.set(isPub);
     this.noteText.setValue(this.pinData.text);
+  }
+
+  onClose() {
+    this.popoverController.dismiss(null, 'close');
   }
 
   onSave() {

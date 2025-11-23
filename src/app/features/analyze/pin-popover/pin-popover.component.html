@@ -3,12 +3,12 @@
         <ion-buttons slot="start">
             <ion-item lines="none">
                 <ion-label>@if(isPersistant()) { Persistent } @else { Temporal }</ion-label>
-                <ion-toggle id="persistToggle" aria-label="Persist" (ionChange)="togglePersistant()"></ion-toggle>
+                <ion-toggle id="persistToggle" aria-label="Persist" [checked]="isPersistant()" (ionChange)="togglePersistant()"></ion-toggle>
             </ion-item>
             @if(isPersistant()) {
             <ion-item lines="none">
                 <ion-label>@if(isPublic()) { Public } @else { Private }</ion-label>
-                <ion-toggle id="publicToggle" aria-label="Public or Private" (ionChange)="togglePublic()"></ion-toggle>
+                <ion-toggle id="publicToggle" aria-label="Public or Private" [checked]="isPublic()" (ionChange)="togglePublic()"></ion-toggle>
             </ion-item>
             }
         </ion-buttons>
@@ -21,6 +21,7 @@
     </ion-textarea>
 
     <div class="ion-padding-top ion-text-right">
+        <ion-button size="small" (click)="onClose()">Close</ion-button>
         <ion-button size="small" (click)="onSave()">Save</ion-button>
     </div>
 </ion-content>
