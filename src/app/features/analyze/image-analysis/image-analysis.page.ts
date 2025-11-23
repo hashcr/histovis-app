@@ -321,6 +321,10 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     if (!id) return;
 
     if (pinData.persisted) {
+      if (pinData.isTemporal) {
+        this.deletePin(id, pinData);
+        return;
+      }
       this.updatePin(id, pinData);
       return;
     }
@@ -338,6 +342,18 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       },
       error: (err) => {
         this.notifications.showError(err?.error?.message || 'Failed to update pin');
+      }
+    });
+  }
+
+  private deletePin(imageId: string, pinData: Pin) {
+    this.imageService.deletePin(imageId, pinData.id).subscribe({
+      next: (response) => {
+        this.pinMap.set(pinData.id, pinData);
+        this.notifications.showSuccess('Pin deleted successfully');
+      },
+      error: (err) => {
+        this.notifications.showError(err?.error?.message || 'Failed to delete pin');
       }
     });
   }
