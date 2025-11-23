@@ -43,3 +43,7 @@ export interface UpdatePinRequest {
 export interface UpdatePinResponse {
     pin: Pin;
 }
+
+export interface DeletePinResponse {
+    deleted: boolean;
+}
