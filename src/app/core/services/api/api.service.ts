@@ -41,4 +41,12 @@ export class ApiService {
     public put<T, B = unknown>(path: string, body: B): Observable<T> {
         return this.http.put<T>(`${this.base}/${path}`, body);
     }
+
+    /** Send DELETE request. 
+     * @template T - response type
+     * @template P - params type (defaults to unknown)
+     */
+    public delete<T>(path: string): Observable<T> {
+        return this.http.delete<T>(`${this.base}/${path}`);
+    }
 }
