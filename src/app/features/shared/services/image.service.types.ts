@@ -35,3 +35,11 @@ export interface AddPinRequest {
 export interface AddPinResponse {
     pin: Pin;
 }
+
+export interface UpdatePinRequest {
+    pin: Pin;
+}
+
+export interface UpdatePinResponse {
+    pin: Pin;
+}
