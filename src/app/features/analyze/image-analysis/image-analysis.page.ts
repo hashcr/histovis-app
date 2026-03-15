@@ -190,7 +190,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
 
   private getCurrentUserEmail(): string {
     const user = this.authService.user();
-    return user?.email || '';
+    return user?.username || '';
   }
 
   enableDropPinMode() {

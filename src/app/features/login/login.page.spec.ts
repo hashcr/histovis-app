@@ -26,8 +26,8 @@ describe('LoginPage', () => {
     // default form
     const form = new FormGroup({ email: new FormControl(''), password: new FormControl('') });
     loginFormServiceSpy.createForm.and.returnValue(form);
-    loginFormValueServiceSpy.toModel.and.callFake((f: FormGroup) => ({ email: f.get('email')?.value, password: f.get('password')?.value }));
-    loginServiceSpy.login.and.returnValue(of({ user: { email: 'a@b.com', firstName: 'A', lastName: 'B', token: 'tok', isAdmin: false } }));
+    loginFormValueServiceSpy.toModel.and.callFake((f: FormGroup) => ({ username: f.get('email')?.value, password: f.get('password')?.value }));
+    loginServiceSpy.login.and.returnValue(of({ user: { username: 'a@b.com', firstName: 'A', lastName: 'B', token: 'tok', isAdmin: false } }));
 
     await TestBed.configureTestingModule({
       imports: [LoginPage],

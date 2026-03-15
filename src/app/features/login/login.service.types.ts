@@ -3,7 +3,7 @@
 import { User } from "src/app/core/models/user.model";
 
 export interface LoginRequest {
-	email: string;
+	username: string;
 	password: string;
 }
 

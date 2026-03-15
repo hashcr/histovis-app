@@ -12,7 +12,7 @@ export class LoginFormValueService {
     toModel(form: LoginFormValue): LoginRequest {
         const v = form.getRawValue();
         return {
-            email: v.email,
+            username: v.username,
             password: v.password,
         };
     }
