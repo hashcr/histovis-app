@@ -24,9 +24,9 @@ describe('LoginPage', () => {
     routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
     // default form
-    const form = new FormGroup({ email: new FormControl(''), password: new FormControl('') });
+    const form = new FormGroup({ username: new FormControl(''), password: new FormControl('') });
     loginFormServiceSpy.createForm.and.returnValue(form);
-    loginFormValueServiceSpy.toModel.and.callFake((f: FormGroup) => ({ username: f.get('email')?.value, password: f.get('password')?.value }));
+    loginFormValueServiceSpy.toModel.and.callFake((f: FormGroup) => ({ username: f.get('username')?.value, password: f.get('password')?.value }));
     loginServiceSpy.login.and.returnValue(of({ user: { username: 'a@b.com', firstName: 'A', lastName: 'B', token: 'tok', isAdmin: false } }));
 
     await TestBed.configureTestingModule({
@@ -49,7 +49,7 @@ describe('LoginPage', () => {
   });
 
   it('should call login and navigate on success', async () => {
-    component.form.patchValue({ email: 'a@b.com', password: 'pw' });
+    component.form.patchValue({ username: 'a@b.com', password: 'pw' });
     await component.onSubmit();
 
     expect(loginFormValueServiceSpy.toModel).toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('LoginPage', () => {
 
   it('should set error when login fails', async () => {
     loginServiceSpy.login.and.returnValue(throwError(() => new Error('fail')));
-    component.form.patchValue({ email: 'a@b.com', password: 'pw' });
+    component.form.patchValue({ username: 'a@b.com', password: 'pw' });
 
     await component.onSubmit();
 
