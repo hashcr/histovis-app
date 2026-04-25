@@ -1,7 +1,9 @@
 import { AfterViewInit, Component, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PopoverController, IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { PopoverController, ModalController, IonToggle, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+
+import { PluginDrawerComponent } from '../plugin-drawer/plugin-drawer.component';
 import OpenSeadragon from 'openseadragon';
 import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '../../shared/services/image.service';
@@ -17,7 +19,7 @@ import { PinPopoverComponent } from '../pin-popover/pin-popover.component';
   templateUrl: './image-analysis.page.html',
   styleUrls: ['./image-analysis.page.scss'],
   standalone: true,
-  imports: [ImageDetailsComponent, CommonModule, FormsModule, IonToggle, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonGrid, IonRow, IonCol, ReactiveFormsModule],
+  imports: [ImageDetailsComponent, PluginDrawerComponent, CommonModule, FormsModule, IonToggle, IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonItem, IonLabel, IonInput, IonButton, IonIcon, IonGrid, IonRow, IonCol, ReactiveFormsModule],
 })
 export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   // Services
@@ -27,6 +29,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private ngZone = inject(NgZone);
   private authService = inject(AuthService);
   private popoverController = inject(PopoverController);
+  private modalController = inject(ModalController);
 
   // Signals
   imageId = signal<string | null>(null);
@@ -49,7 +52,6 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   searchImageId = new FormControl<string>('');
 
   constructor() {
-
     effect(() => {
       const id = this.imageId();
       if (id) {
@@ -82,6 +84,14 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.viewerReady.set(true);
+  }
+
+  async openPluginDrawer() {
+    const modal = await this.modalController.create({
+      component: PluginDrawerComponent,
+      cssClass: 'plugin-drawer',
+    });
+    await modal.present();
   }
 
   ngOnInit() {
