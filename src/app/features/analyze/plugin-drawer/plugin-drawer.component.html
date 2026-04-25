@@ -8,4 +8,93 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content></ion-content>
+
+<ion-content [scrollY]="false">
+  <div class="drawer-body">
+
+    <!-- Left column: plugin list -->
+    <div class="left-col" [class.hide-mobile]="selectedPlugin() !== null">
+      <ion-list lines="none">
+        @for (plugin of plugins(); track plugin.id) {
+          <ion-item
+            button
+            detail="false"
+            class="plugin-item"
+            [class.selected]="selectedPlugin()?.id === plugin.id"
+            (click)="selectPlugin(plugin)">
+            <div class="plugin-item-content">
+              <span class="plugin-name">{{ plugin.name }}</span>
+              <ion-badge [color]="getBadgeColor(plugin.code)">{{ plugin.code }}</ion-badge>
+            </div>
+          </ion-item>
+        }
+      </ion-list>
+    </div>
+
+    <!-- Right column: detail pane -->
+    <div class="right-col" [class.hide-mobile]="selectedPlugin() === null">
+
+      @if (selectedPlugin() === null) {
+        <div class="empty-state">
+          <ion-note>Select a plugin to get started</ion-note>
+        </div>
+      }
+
+      @if (selectedPlugin(); as plugin) {
+        <!-- Mobile back button -->
+        <ion-button fill="clear" class="back-btn" (click)="clearSelection()">
+          <ion-icon slot="start" name="chevron-back"></ion-icon>
+          Plugins
+        </ion-button>
+
+        <!-- Plugin info -->
+        <ion-text color="primary">
+          <p class="plugin-title">{{ plugin.name }}</p>
+        </ion-text>
+        <ion-note class="plugin-desc">{{ plugin.description }}</ion-note>
+
+        <!-- Metadata -->
+        <p class="meta-row">
+          <ion-note>Queue: {{ plugin.topic }}</ion-note>
+        </p>
+        <p class="meta-row">
+          <ion-note>Installed by: {{ plugin.installedBy }}</ion-note>
+        </p>
+
+        <!-- Parameters -->
+        <p class="section-label">Parameters</p>
+
+        @if (argsEntries().length === 0) {
+          <ion-note>No parameters required</ion-note>
+        }
+
+        @for (entry of argsEntries(); track entry.key) {
+          <div class="arg-row">
+            <ion-input
+              class="arg-key"
+              fill="outline"
+              [disabled]="true"
+              [value]="entry.key">
+            </ion-input>
+            <ion-input
+              class="arg-value"
+              fill="outline"
+              [value]="entry.value"
+              (ionInput)="updateArg(entry.key, $event.detail.value ?? '')">
+            </ion-input>
+          </div>
+        }
+
+        <!-- Run button -->
+        <ion-button
+          expand="block"
+          color="primary"
+          class="run-btn"
+          (click)="runPlugin(plugin)">
+          Run analysis
+        </ion-button>
+      }
+    </div>
+
+  </div>
+</ion-content>
