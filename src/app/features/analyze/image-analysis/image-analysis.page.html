@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Image Analysis</ion-title>
@@ -35,10 +35,10 @@
   }
   <!-- Viewer-->
   <ion-content [style.display]="imageLoaded() ? 'block' : 'none'">
-    <ion-grid fixed>
+    <ion-grid class="analysis-grid">
       <ion-row>
         <!-- Viewer (Left on Desktop / Top on Mobile) -->
-        <ion-col size="12" size-lg="7">
+        <ion-col size="12" size-lg="8" size-xl="9">
           <ion-card class="viewer-card">
 
             <ion-card-header>
@@ -60,7 +60,7 @@
         </ion-col>
 
         <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
-        <ion-col size="12" size-lg="5">
+        <ion-col size="12" size-lg="4" size-xl="3">
           <app-image-details [image]="imageInfo()"></app-image-details>
         </ion-col>
       </ion-row>

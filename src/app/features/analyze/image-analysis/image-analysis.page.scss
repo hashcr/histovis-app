@@ -27,15 +27,15 @@
   }
 }
 
-/* Responsive grid spacing */
-ion-grid {
+.analysis-grid {
+  width: 100%;
   --ion-grid-column-padding: 8px;
 }
 
 @media (min-width: 992px) {
   ion-content {
-    --padding-start: 24px;
-    --padding-end: 24px;
+    --padding-start: 8px;
+    --padding-end: 8px;
   }
 
   .viewer-card {
