@@ -1,6 +1,6 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
 import { ImageService } from '../../shared/services/image.service';
 import { ImageInfo } from 'src/app/core/models/image.model';

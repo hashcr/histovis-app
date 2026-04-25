@@ -17,7 +17,7 @@
 
       <ion-item>
         <ion-input
-          formControlName="email"
+          formControlName="username"
           label="Email"
           labelPlacement="floating"
           placeholder="Enter your email"
@@ -25,7 +25,7 @@
         </ion-input>
       </ion-item>
 
-      @if (form.get('email')?.touched && form.get('email')?.invalid) {
+      @if (form.get('username')?.touched && form.get('username')?.invalid) {
         <ion-text color="danger" class="ion-padding-start text-sm">
           Email is required
         </ion-text>

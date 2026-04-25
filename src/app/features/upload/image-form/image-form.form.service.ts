@@ -1,5 +1,5 @@
-import { ElementRef, inject, Injectable, ViewChild } from '@angular/core';
-import { Form, FormArray, FormBuilder, FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { inject, Injectable } from '@angular/core';
+import { FormArray, FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { ImageInfo } from '../../../core/models/image.model';
 import { ImageForm } from './image-form.types';
 @Injectable({

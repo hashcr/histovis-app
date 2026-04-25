@@ -102,7 +102,7 @@ export class ImageDetailsComponent {
   }
 
   isMine(c: Comment): boolean {
-    return this.authService.user()?.email === c.email;
+    return this.authService.user()?.username === c.email;
   }
 
   private removeCommentFromImage(newImageInfo: ImageInfo, index: number) {
@@ -137,7 +137,7 @@ export class ImageDetailsComponent {
   private createComment(newComment: string): Comment {
     return {
       author: getAuthor(this.authService.user()),
-      email: this.authService.user()?.email ?? "",
+      email: this.authService.user()?.username ?? "",
       text: newComment,
       date: new Date()
     };

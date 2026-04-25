@@ -39,9 +39,10 @@ export class LoginPage {
         this.loading.set(false);
         this.router.navigateByUrl('/home', { replaceUrl: true });
       },
-      error: () => {
+      error: (err) => {
+        console.error('Login error:', err);
         this.error.set('Login failed');
-        this.loading.set(false);        
+        this.loading.set(false);
       }
     });
   }

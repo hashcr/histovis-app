@@ -190,7 +190,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
 
   private getCurrentUserEmail(): string {
     const user = this.authService.user();
-    return user?.email || '';
+    return user?.username || '';
   }
 
   enableDropPinMode() {
@@ -361,8 +361,19 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private savePin(imageId: string, pinData: Pin) {
     this.imageService.addPin(imageId, pinData).subscribe({
       next: (response) => {
+        const oldHtmlId = pinData.id;
+        const serverPin = response.pin;
+
+        // Remap local html-id → server UUID
+        pinData.id = serverPin.id;
         pinData.persisted = true;
-        this.pinMap.set(pinData.id, pinData);
+        this.pinMap.delete(oldHtmlId);
+        this.pinMap.set(serverPin.id, pinData);
+
+        // Update the HTML element id so the mouse tracker keeps working
+        const el = document.getElementById(oldHtmlId);
+        if (el) el.id = serverPin.id;
+
         this.notifications.showSuccess('Pin saved successfully');
       },
       error: (err) => {

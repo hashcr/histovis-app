@@ -1,19 +1,16 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from 'rxjs';
-import { environment } from "src/environments/environment";
 
-@Injectable({ providedIn: 'root' })
-export class ApiService {
-    private http = inject(HttpClient);
-    private base = environment.authApiBaseUrl;
+export class ScopedApiService {
+    constructor(private http: HttpClient, private base: string) {}
 
     /** Send POST request. 
      * @template T - response type
      * @template B - body type (defaults to unknown)
      */
     public post<T, B = unknown>(path: string, body: B): Observable<T> {
-        return this.http.post<T>(`${this.base}/${path}`, body);
+        return this.http.post<T>(path ? `${this.base}/${path}` : this.base, body);
     }
 
     /** Send GET request.
@@ -31,7 +28,7 @@ export class ApiService {
             });
         }
 
-        return this.http.get<T>(`${this.base}/${path}`, { params: httpParams });
+        return this.http.get<T>(path ? `${this.base}/${path}` : this.base, { params: httpParams });
     }
 
     /** Send PUT request. 
@@ -39,7 +36,7 @@ export class ApiService {
      * @template B - body type (defaults to unknown)
      */
     public put<T, B = unknown>(path: string, body: B): Observable<T> {
-        return this.http.put<T>(`${this.base}/${path}`, body);
+        return this.http.put<T>(path ? `${this.base}/${path}` : this.base, body);
     }
 
     /** Send DELETE request. 
@@ -47,6 +44,15 @@ export class ApiService {
      * @template P - params type (defaults to unknown)
      */
     public delete<T>(path: string): Observable<T> {
-        return this.http.delete<T>(`${this.base}/${path}`);
+        return this.http.delete<T>(path ? `${this.base}/${path}` : this.base);
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+    private http = inject(HttpClient);
+
+    for(baseUrl: string): ScopedApiService {
+        return new ScopedApiService(this.http, baseUrl);
     }
 }
