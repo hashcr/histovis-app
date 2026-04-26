@@ -14,21 +14,34 @@
 
     <!-- Left column: plugin list -->
     <div class="left-col" [class.hide-mobile]="selectedPlugin() !== null">
-      <ion-list lines="none">
-        @for (plugin of plugins(); track plugin.id) {
-          <ion-item
-            button
-            detail="false"
-            class="plugin-item"
-            [class.selected]="selectedPlugin()?.id === plugin.id"
-            (click)="selectPlugin(plugin)">
-            <div class="plugin-item-content">
-              <span class="plugin-name">{{ plugin.name }}</span>
-              <ion-badge [color]="getBadgeColor(plugin.code)">{{ plugin.code }}</ion-badge>
-            </div>
-          </ion-item>
-        }
-      </ion-list>
+      @if (isLoadingPlugins()) {
+        <div class="list-state">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      }
+      @if (pluginsError()) {
+        <div class="list-state">
+          <ion-note color="danger">{{ pluginsError() }}</ion-note>
+          <ion-button fill="clear" size="small" (click)="loadPlugins()">Retry</ion-button>
+        </div>
+      }
+      @if (!isLoadingPlugins() && !pluginsError()) {
+        <ion-list lines="none">
+          @for (plugin of plugins(); track plugin.id) {
+            <ion-item
+              button
+              detail="false"
+              class="plugin-item"
+              [class.selected]="selectedPlugin()?.id === plugin.id"
+              (click)="selectPlugin(plugin)">
+              <div class="plugin-item-content">
+                <span class="plugin-name">{{ plugin.name }}</span>
+                <ion-badge [color]="getBadgeColor(plugin.code)">{{ plugin.code }}</ion-badge>
+              </div>
+            </ion-item>
+          }
+        </ion-list>
+      }
     </div>
 
     <!-- Right column: detail pane -->

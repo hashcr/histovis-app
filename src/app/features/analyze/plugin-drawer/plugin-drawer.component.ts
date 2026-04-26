@@ -1,51 +1,13 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon,
   IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonBadge,
   IonNote, IonText, IonInput, IonChip, IonAccordion, IonAccordionGroup,
-  ModalController
+  IonSpinner, ModalController
 } from '@ionic/angular/standalone';
 import { Job, JobStatus, Plugin } from 'src/app/core/models/analysis.model';
-
-const MOCK_PLUGINS: Plugin[] = [
-  {
-    id: '00000000-0000-0000-0000-000000000001',
-    code: 'STARDIST_HE',
-    name: 'Cell Detection H&E',
-    description: 'Detects nuclei in H&E tiles using StarDist 2D.',
-    queue: 'stardist.queue',
-    topic: 'stardist.he.detect',
-    exampleArgs: { prob_thresh: '0.479', nms_thresh: '0.3', tile_size: '512' },
-    installedBy: 'admin',
-    installedDate: '2025-01-10T10:00:00',
-    readme: ''
-  },
-  {
-    id: '00000000-0000-0000-0000-000000000002',
-    code: 'IHC_COUNT',
-    name: 'IHC Positive Count',
-    description: 'Counts DAB-positive nuclei in IHC slides.',
-    queue: 'stardist.queue',
-    topic: 'ihc.dab.count',
-    exampleArgs: { dab_thresh: '0.3', tile_size: '512' },
-    installedBy: 'admin',
-    installedDate: '2025-01-10T10:00:00',
-    readme: ''
-  },
-  {
-    id: '00000000-0000-0000-0000-000000000003',
-    code: 'LLM_DESCRIBE',
-    name: 'LLM Description',
-    description: 'Generates a natural language description using LLaVA.',
-    queue: 'ollama.queue',
-    topic: 'llm.describe.wsi',
-    exampleArgs: { model: 'llava', lang: 'en' },
-    installedBy: 'admin',
-    installedDate: '2025-01-10T10:00:00',
-    readme: ''
-  }
-];
+import { PluginService } from '../shared/services/plugin.service';
 
 const MOCK_JOBS: Job[] = [
   {
@@ -107,18 +69,21 @@ const MOCK_JOBS: Job[] = [
     DatePipe,
     IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon,
     IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonBadge,
-    IonNote, IonText, IonInput, IonChip, IonAccordion, IonAccordionGroup
+    IonNote, IonText, IonInput, IonChip, IonAccordion, IonAccordionGroup,
+    IonSpinner
   ]
 })
-export class PluginDrawerComponent {
+export class PluginDrawerComponent implements OnInit {
   private modalController = inject(ModalController);
+  private pluginService = inject(PluginService);
 
   imageId = input<string>();
 
-  // Expose JobStatus enum to template
   protected readonly JobStatus = JobStatus;
 
-  plugins = signal<Plugin[]>(MOCK_PLUGINS);
+  plugins = signal<Plugin[]>([]);
+  isLoadingPlugins = signal<boolean>(false);
+  pluginsError = signal<string | null>(null);
   selectedPlugin = signal<Plugin | null>(null);
   editableArgs = signal<Record<string, string>>({});
   jobs = signal<Job[]>(MOCK_JOBS);
@@ -176,6 +141,25 @@ export class PluginDrawerComponent {
 
   viewFullOutput(text: string): void {
     window.alert(text);
+  }
+
+  ngOnInit(): void {
+    this.loadPlugins();
+  }
+
+  loadPlugins(): void {
+    this.isLoadingPlugins.set(true);
+    this.pluginsError.set(null);
+    this.pluginService.getAll().subscribe({
+      next: response => {
+        this.plugins.set(response.plugins);
+        this.isLoadingPlugins.set(false);
+      },
+      error: err => {
+        this.pluginsError.set(err?.message ?? 'Failed to load plugins');
+        this.isLoadingPlugins.set(false);
+      }
+    });
   }
 
   runPlugin(plugin: Plugin): void {
