@@ -90,6 +90,9 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: PluginDrawerComponent,
       cssClass: 'plugin-drawer',
+      componentProps: {
+        imageId: this.imageId()
+      }
     });
     await modal.present();
   }

@@ -129,6 +129,55 @@
   margin-top: 16px;
 }
 
+ion-item-divider {
+  margin-top: 20px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 0;
+
+  ion-chip {
+    font-size: 12px;
+    height: 26px;
+    margin: 0;
+  }
+}
+
+.jobs-empty {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.job-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  font-size: 13px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.job-code {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.job-time {
+  font-size: 11px;
+  color: var(--ion-color-medium);
+  margin: 2px 0 0;
+}
+
 // Mobile responsive
 @media (max-width: 768px) {
   .hide-mobile {
