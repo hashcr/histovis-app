@@ -116,6 +116,17 @@
         <!-- Job history -->
         <ion-item-divider>
           <ion-label>Job history</ion-label>
+          <div slot="end" class="poll-status">
+            @if (hasRunningJobs() || isLoadingJobs()) {
+              <ion-spinner name="dots" class="poll-spinner"></ion-spinner>
+              <span class="poll-label">polling</span>
+            }
+            @if (!hasRunningJobs() && !isLoadingJobs()) {
+              <ion-button fill="clear" size="small" class="poll-refresh" (click)="loadJobs()">
+                <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+              </ion-button>
+            }
+          </div>
         </ion-item-divider>
 
         <!-- Filter chips -->

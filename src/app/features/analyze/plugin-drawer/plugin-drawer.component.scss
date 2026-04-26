@@ -145,6 +145,30 @@
 
 ion-item-divider {
   margin-top: 20px;
+
+  .poll-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .poll-spinner {
+    width: 14px;
+    height: 14px;
+    color: var(--ion-color-medium);
+  }
+
+  .poll-label {
+    font-size: 11px;
+    color: var(--ion-color-medium);
+  }
+
+  .poll-refresh {
+    --padding-start: 4px;
+    --padding-end: 4px;
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
 }
 
 .filter-row {
