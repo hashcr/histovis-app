@@ -8,57 +8,7 @@ import {
 } from '@ionic/angular/standalone';
 import { Job, JobStatus, Plugin } from 'src/app/core/models/analysis.model';
 import { PluginService } from '../shared/services/plugin.service';
-
-const MOCK_JOBS: Job[] = [
-  {
-    id: 'aaaaaaaa-0000-0000-0000-000000000001',
-    pluginCode: 'STARDIST_HE',
-    imageId: '00000000-0000-0000-0000-000000000099',
-    imageUrl: '',
-    args: { prob_thresh: '0.479', tile_size: '512' },
-    status: JobStatus.COMPLETED,
-    date: new Date(Date.now() - 120000).toISOString(),
-    completedDate: new Date(Date.now() - 90000).toISOString(),
-    output: '{"cell_count":142,"mean_area":47.3,"processing_time":"3.2s"}',
-    username: 'admin'
-  },
-  {
-    id: 'aaaaaaaa-0000-0000-0000-000000000002',
-    pluginCode: 'LLM_DESCRIBE',
-    imageId: '00000000-0000-0000-0000-000000000099',
-    imageUrl: '',
-    args: { model: 'llava', lang: 'en' },
-    status: JobStatus.COMPLETED,
-    date: new Date().toISOString(),
-    completedDate: new Date().toISOString(),
-    output: 'The slide shows a moderately differentiated gastric adenocarcinoma with glandular structures embedded in a desmoplastic stroma. Tumor cells display enlarged hyperchromatic nuclei with prominent nucleoli. Scattered inflammatory infiltrate is present at the invasive front. The morphological pattern is consistent with an intestinal-type adenocarcinoma according to the Lauren classification. No signet ring cells are identified in the evaluated area. Overall cellularity is high with an estimated mitotic index of 4 per high power field.',
-    username: 'admin'
-  },
-  {
-    id: 'aaaaaaaa-0000-0000-0000-000000000003',
-    pluginCode: 'STARDIST_HE',
-    imageId: '00000000-0000-0000-0000-000000000099',
-    imageUrl: '',
-    args: { prob_thresh: '0.9', tile_size: '256' },
-    status: JobStatus.FAILED,
-    date: new Date(Date.now() - 1080000).toISOString(),
-    completedDate: null,
-    output: null,
-    username: 'admin'
-  },
-  {
-    id: 'aaaaaaaa-0000-0000-0000-000000000004',
-    pluginCode: 'IHC_COUNT',
-    imageId: '00000000-0000-0000-0000-000000000099',
-    imageUrl: '',
-    args: { dab_thresh: '0.3', tile_size: '512' },
-    status: JobStatus.PENDING,
-    date: new Date(Date.now() - 30000).toISOString(),
-    completedDate: null,
-    output: null,
-    username: 'admin'
-  }
-];
+import { JobService } from '../shared/services/job.service';
 
 @Component({
   selector: 'app-plugin-drawer',
@@ -76,6 +26,7 @@ const MOCK_JOBS: Job[] = [
 export class PluginDrawerComponent implements OnInit {
   private modalController = inject(ModalController);
   private pluginService = inject(PluginService);
+  private jobService = inject(JobService);
 
   imageId = input<string>();
 
@@ -86,7 +37,8 @@ export class PluginDrawerComponent implements OnInit {
   pluginsError = signal<string | null>(null);
   selectedPlugin = signal<Plugin | null>(null);
   editableArgs = signal<Record<string, string>>({});
-  jobs = signal<Job[]>(MOCK_JOBS);
+  jobs = signal<Job[]>([]);
+  isLoadingJobs = signal<boolean>(false);
   activeFilter = signal<JobStatus | 'ALL'>('ALL');
 
   argsEntries = computed(() =>
@@ -145,6 +97,7 @@ export class PluginDrawerComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPlugins();
+    this.loadJobs();
   }
 
   loadPlugins(): void {
@@ -159,6 +112,19 @@ export class PluginDrawerComponent implements OnInit {
         this.pluginsError.set(err?.message ?? 'Failed to load plugins');
         this.isLoadingPlugins.set(false);
       }
+    });
+  }
+
+  loadJobs(): void {
+    const imageId = this.imageId();
+    if (!imageId) return;
+    this.isLoadingJobs.set(true);
+    this.jobService.getByImage(imageId).subscribe({
+      next: response => {
+        this.jobs.set(response.jobs);
+        this.isLoadingJobs.set(false);
+      },
+      error: () => this.isLoadingJobs.set(false)
     });
   }
 

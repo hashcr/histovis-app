@@ -160,6 +160,12 @@ ion-item-divider {
   }
 }
 
+.jobs-loading {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
 .jobs-empty {
   display: flex;
   justify-content: center;

@@ -124,49 +124,57 @@
             (click)="activeFilter.set(JobStatus.FAILED)">Failed</ion-chip>
         </div>
 
-        @if (filteredJobs().length === 0) {
-          <div class="jobs-empty">
-            <ion-note>No jobs found</ion-note>
+        @if (isLoadingJobs()) {
+          <div class="jobs-loading">
+            <ion-spinner name="crescent"></ion-spinner>
           </div>
         }
 
-        <ion-accordion-group [multiple]="false">
-          @for (job of filteredJobs(); track job.id) {
-            <ion-accordion
-              [value]="job.id"
-              [disabled]="!job.output"
-              [toggleIcon]="job.output ? 'chevron-down-outline' : ''">
-
-              <ion-item slot="header" lines="full" class="job-item">
-                <span class="status-dot"
-                  [style.background]="'var(--ion-color-' + getStatusColor(job.status) + ')'">
-                </span>
-                <ion-label>
-                  <p class="job-code">{{ job.pluginCode }}</p>
-                  <p class="job-time">{{ job.date | date:'dd MMM yyyy, HH:mm' }}</p>
-                  <p class="job-user">{{ job.username }}</p>
-                </ion-label>
-                <ion-badge slot="end" [color]="getStatusColor(job.status)">{{ job.status }}</ion-badge>
-              </ion-item>
-
-              <div slot="content" class="job-output">
-                @if (job.output) {
-                  @let formatted = formatOutput(job.output);
-                  @if (job.output.length <= 300) {
-                    <pre class="output-pre">{{ formatted.text }}</pre>
-                  } @else {
-                    <pre class="output-pre output-preview">{{ formatted.text.slice(0, 300) }}...</pre>
-                    <ion-button expand="block" fill="clear" size="small" color="primary"
-                      (click)="viewFullOutput(formatted.text)">
-                      View full output
-                    </ion-button>
-                  }
-                }
-              </div>
-
-            </ion-accordion>
+        @if (!isLoadingJobs()) {
+          @if (filteredJobs().length === 0) {
+            <div class="jobs-empty">
+              <ion-note>No jobs found</ion-note>
+            </div>
           }
-        </ion-accordion-group>
+
+          <ion-accordion-group [multiple]="false">
+            @for (job of filteredJobs(); track job.id) {
+              <ion-accordion
+                [value]="job.id"
+                [disabled]="!job.output"
+                [toggleIcon]="job.output ? 'chevron-down-outline' : ''">
+
+                <ion-item slot="header" lines="full" class="job-item">
+                  <span class="status-dot"
+                    [style.background]="'var(--ion-color-' + getStatusColor(job.status) + ')'">
+                  </span>
+                  <ion-label>
+                    <p class="job-code">{{ job.pluginCode }}</p>
+                    <p class="job-time">{{ job.date | date:'dd MMM yyyy, HH:mm' }}</p>
+                    <p class="job-user">{{ job.username }}</p>
+                  </ion-label>
+                  <ion-badge slot="end" [color]="getStatusColor(job.status)">{{ job.status }}</ion-badge>
+                </ion-item>
+
+                <div slot="content" class="job-output">
+                  @if (job.output) {
+                    @let formatted = formatOutput(job.output);
+                    @if (job.output.length <= 300) {
+                      <pre class="output-pre">{{ formatted.text }}</pre>
+                    } @else {
+                      <pre class="output-pre output-preview">{{ formatted.text.slice(0, 300) }}...</pre>
+                      <ion-button expand="block" fill="clear" size="small" color="primary"
+                        (click)="viewFullOutput(formatted.text)">
+                        View full output
+                      </ion-button>
+                    }
+                  }
+                </div>
+
+              </ion-accordion>
+            }
+          </ion-accordion-group>
+        }
       }
     </div>
 
