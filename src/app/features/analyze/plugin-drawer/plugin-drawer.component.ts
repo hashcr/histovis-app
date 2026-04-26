@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon,
   IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonBadge,
-  IonNote, IonText, IonInput, IonChip,
+  IonNote, IonText, IonInput, IonChip, IonAccordion, IonAccordionGroup,
   ModalController
 } from '@ionic/angular/standalone';
 import { Job, JobStatus, Plugin } from 'src/app/core/models/analysis.model';
@@ -57,7 +57,7 @@ const MOCK_JOBS: Job[] = [
     status: JobStatus.COMPLETED,
     date: new Date(Date.now() - 120000).toISOString(),
     completedDate: new Date(Date.now() - 90000).toISOString(),
-    output: null,
+    output: '{"cell_count":142,"mean_area":47.3,"processing_time":"3.2s"}',
     username: 'admin'
   },
   {
@@ -66,10 +66,10 @@ const MOCK_JOBS: Job[] = [
     imageId: '00000000-0000-0000-0000-000000000099',
     imageUrl: '',
     args: { model: 'llava', lang: 'en' },
-    status: JobStatus.RUNNING,
+    status: JobStatus.COMPLETED,
     date: new Date().toISOString(),
-    completedDate: null,
-    output: null,
+    completedDate: new Date().toISOString(),
+    output: 'The slide shows a moderately differentiated gastric adenocarcinoma with glandular structures embedded in a desmoplastic stroma. Tumor cells display enlarged hyperchromatic nuclei with prominent nucleoli. Scattered inflammatory infiltrate is present at the invasive front. The morphological pattern is consistent with an intestinal-type adenocarcinoma according to the Lauren classification. No signet ring cells are identified in the evaluated area. Overall cellularity is high with an estimated mitotic index of 4 per high power field.',
     username: 'admin'
   },
   {
@@ -107,7 +107,7 @@ const MOCK_JOBS: Job[] = [
     DatePipe,
     IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon,
     IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonBadge,
-    IonNote, IonText, IonInput, IonChip
+    IonNote, IonText, IonInput, IonChip, IonAccordion, IonAccordionGroup
   ]
 })
 export class PluginDrawerComponent {
@@ -163,6 +163,19 @@ export class PluginDrawerComponent {
       [JobStatus.PENDING]:   'medium',
     };
     return map[status] ?? 'medium';
+  }
+
+  formatOutput(raw: string): { text: string; isJson: boolean } {
+    try {
+      const parsed = JSON.parse(raw);
+      return { text: JSON.stringify(parsed, null, 2), isJson: true };
+    } catch {
+      return { text: raw, isJson: false };
+    }
+  }
+
+  viewFullOutput(text: string): void {
+    window.alert(text);
   }
 
   runPlugin(plugin: Plugin): void {
