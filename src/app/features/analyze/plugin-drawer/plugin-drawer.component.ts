@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon,
@@ -11,6 +11,7 @@ import { PluginService } from '../shared/services/plugin.service';
 import { JobService } from '../shared/services/job.service';
 import { SubmitJobRequest } from '../shared/services/analysis.service.types';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
+import { EMPTY, interval, switchMap, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-plugin-drawer',
@@ -25,11 +26,12 @@ import { NotificationService } from 'src/app/core/services/notifications/notific
     IonSpinner
   ]
 })
-export class PluginDrawerComponent implements OnInit {
+export class PluginDrawerComponent implements OnInit, OnDestroy {
   private modalController = inject(ModalController);
   private pluginService = inject(PluginService);
   private jobService = inject(JobService);
   private notifications = inject(NotificationService);
+  private sub?: Subscription;
 
   imageId?: string;
   imageUrl?: string;
@@ -54,6 +56,10 @@ export class PluginDrawerComponent implements OnInit {
     this.activeFilter() === 'ALL'
       ? this.jobs()
       : this.jobs().filter(j => j.status === this.activeFilter())
+  );
+
+  hasRunningJobs = computed(() =>
+    this.jobs().some(job => job.status === JobStatus.RUNNING || job.status === JobStatus.PENDING)
   );
 
   selectPlugin(plugin: Plugin): void {
@@ -103,6 +109,11 @@ export class PluginDrawerComponent implements OnInit {
   ngOnInit(): void {
     this.loadPlugins();
     this.loadJobs();
+    this.pollJobs();
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
 
   loadPlugins(): void {
@@ -165,5 +176,15 @@ export class PluginDrawerComponent implements OnInit {
 
   close(): void {
     this.modalController.dismiss();
+  }
+
+  private pollJobs(): void {
+    const imageId = this.imageId;
+    if (!imageId) return;
+    this.sub = interval(10000).pipe(
+      switchMap(() => this.hasRunningJobs() ? this.jobService.getByImage(imageId) : EMPTY)
+    ).subscribe({
+      next: response => this.jobs.set(response.jobs)
+    });
   }
 }
