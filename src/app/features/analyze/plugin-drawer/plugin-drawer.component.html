@@ -103,8 +103,14 @@
           expand="block"
           color="primary"
           class="run-btn"
-          (click)="runPlugin(plugin)">
-          Run analysis
+          (click)="submitJob()"
+          [disabled]="isSubmitting() || !selectedPlugin()">
+          @if (isSubmitting()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          }
+          @if (!isSubmitting()) {
+            Run analysis
+          }
         </ion-button>
 
         <!-- Job history -->
