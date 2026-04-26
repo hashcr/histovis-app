@@ -178,6 +178,12 @@ ion-item-divider {
   margin: 2px 0 0;
 }
 
+.job-user {
+  font-size: 11px;
+  color: var(--ion-color-medium);
+  margin: 1px 0 0;
+}
+
 // Mobile responsive
 @media (max-width: 768px) {
   .hide-mobile {

@@ -124,7 +124,8 @@
             </span>
             <ion-label>
               <p class="job-code">{{ job.pluginCode }}</p>
-              <p class="job-time">{{ job.date | date:'shortTime' }}</p>
+              <p class="job-time">{{ job.date | date:'dd MMM yyyy, HH:mm' }}</p>
+              <p class="job-user">{{ job.username }}</p>
             </ion-label>
             <ion-badge slot="end" [color]="getStatusColor(job.status)">{{ job.status }}</ion-badge>
           </ion-item>
