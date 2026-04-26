@@ -1,12 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Image Analysis</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="outline" color="tertiary" (click)="openPluginDrawer()">
-        <ion-icon slot="start" name="sparkles"></ion-icon>
-        AI PLugins
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -46,12 +40,18 @@
               <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
             </ion-card-header>
 
-            <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
-              Drop Pin
-            </ion-button>
-            <ion-toggle [checked]="showingPins()" (ionChange)="showPinsToggle()">
-              Show Pins
-            </ion-toggle>
+            <div class="viewer-controls">
+              <ion-button (click)="enableDropPinMode()" [disabled]="dropPinMode()">
+                Drop Pin
+              </ion-button>
+              <ion-button fill="outline" color="tertiary" (click)="openPluginDrawer()">
+                <ion-icon slot="start" name="sparkles"></ion-icon>
+                AI Plugins
+              </ion-button>
+              <ion-toggle class="pins-toggle" [checked]="showingPins()" (ionChange)="showPinsToggle()">
+                Show Pins
+              </ion-toggle>
+            </div>
 
             <ion-card-content>
               <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>
