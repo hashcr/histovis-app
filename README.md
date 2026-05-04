@@ -1,57 +1,97 @@
-# HistoVis UI 1.0
+# HistoVis App
 
-> A medical image analysis application for whole slide image (WSI) processing,
-> built with a plugin-based extensibility system and multiple AI models.
+> Frontend application for HistoVis — a medical image analysis platform for whole slide image (WSI) processing.
+> Built as part of an academic thesis project.
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+![Status: Mostly Complete](https://img.shields.io/badge/status-mostly%20complete-green)
 
 ---
 
-## About
+## Overview
 
-HistoVis enables analysis of histopathology whole slide images using multiple AI models
-(StarDist for H&E and IHC cell detection, LLM-based description) surfaced through a
-flexible plugin system. Built as part of an academic thesis project.
+HistoVis App is the mobile and desktop frontend for the HistoVis platform. It allows users to upload and manage whole slide images, configure and trigger AI analysis jobs via a plugin system, and review results — all from a responsive Ionic/Angular interface.
 
-**Stack:** Ionic/Angular · Spring Boot · Python (StarDist, llama-cpp-python) · RabbitMQ · PostgreSQL · Docker
+**Key features:**
+- Whole slide image viewer and management
+- Plugin-driven AI analysis panel (H&E, IHC, LLM, Segmentation)
+- Job submission and real-time status tracking
+- Analysis history per image
+- Responsive layout — works on mobile and desktop
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Ionic 7 + Angular |
+| State management | NgRx Signal Store + BehaviorSubject |
+| UI components | Ionic components (`ion-modal`, `ion-segment`, `ion-fab`, etc.) |
+| HTTP client | Angular `HttpClient` |
+| Styling | SCSS + Ionic CSS variables |
+
+---
+
+## Prerequisites
+
+- Node.js >= 18
+- npm >= 9
+- Ionic CLI: `npm install -g @ionic/cli`
+- HistoVis backend services running (see [histovis-monorepo](#related-repositories))
 
 ---
 
 ## Getting Started
 
-> Setup instructions coming soon. See individual service READMEs for details.
+```bash
+# Clone the repo
+git clone https://github.com/hashcr/histovis-app.git
+cd histovis-app
+
+# Install dependencies
+npm install
+
+# Run in browser
+ionic serve
+
+# Run on mobile (Android)
+ionic capacitor run android
+
+# Build for production
+ionic build --prod
+```
+
+---
+
+## Environment Configuration
+
+Create a `src/environments/environment.ts` file based on the example:
+
+```typescript
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:8080',  // API Gateway URL
+};
+```
+
+---
+
+## Related Repositories
+
+| Repo | Description |
+|---|---|
+| [histovis-monorepo](https://github.com/hashcr/histovis-monorepo) | Java Spring Boot backend (analysis-service, API gateway) |
+| [histovis-ai](https://github.com/hashcr/histovis-ai) | Python AI workers (StarDist, LLM consumers) |
 
 ---
 
 ## License
 
-This project is licensed under the
-**Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.
+This project is licensed under **CC BY-NC 4.0**.
+See the [LICENSE](../LICENSE) file for details.
 
-[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-
-You are free to **use, fork, and modify** this project for non-commercial purposes,
-as long as you **credit Ashuin Sharma as the original creator**.
-
-**Commercial use is not permitted** without prior written permission from the author.
-
-See the [LICENSE](./LICENSE) file for full details.
-
----
-
-## Attribution
-
-If you use or build upon HistoVis in your work, please credit it as follows:
-
-> HistoVis — originally created by **Ashuin Sharma**
-> GitHub: https://github.com/hashcr
-
----
-
-## Commercial Licensing
-
-Interested in using HistoVis in a commercial product or service?
-Get in touch to discuss licensing options:
-
-📧 **ashuin.sharma@gmail.com**
+Commercial use requires written permission from the author.
 
 ---
 
@@ -59,20 +99,3 @@ Get in touch to discuss licensing options:
 
 **Ashuin Sharma**
 📧 ashuin.sharma@gmail.com
-
----
-
-## Third-Party Licenses
-
-This project makes use of the following open-source libraries:
-
-| Library | License |
-|---|---|
-| StarDist | BSD-2-Clause |
-| aio-pika | Apache 2.0 |
-| Spring Boot | Apache 2.0 |
-| scikit-image | BSD-3-Clause |
-| llama-cpp-python | MIT |
-| Ionic/Angular | MIT |
-
-All third-party licenses are compatible with the non-commercial use terms of this project.
