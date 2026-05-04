@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Image Analysis</ion-title>
@@ -29,10 +29,10 @@
   }
   <!-- Viewer-->
   <ion-content [style.display]="imageLoaded() ? 'block' : 'none'">
-    <ion-grid fixed>
+    <ion-grid class="analysis-grid">
       <ion-row>
         <!-- Viewer (Left on Desktop / Top on Mobile) -->
-        <ion-col size="12" size-lg="7">
+        <ion-col size="12" size-lg="8" size-xl="9">
           <ion-card class="viewer-card">
 
             <ion-card-header>
@@ -40,12 +40,18 @@
               <ion-card-subtitle>{{ imageInfo()?.description }}</ion-card-subtitle>
             </ion-card-header>
 
-            <ion-button expand="block" (click)="enableDropPinMode()" [disabled]="dropPinMode()">
-              Drop Pin
-            </ion-button>
-            <ion-toggle [checked]="showingPins()" (ionChange)="showPinsToggle()">
-              Show Pins
-            </ion-toggle>
+            <div class="viewer-controls">
+              <ion-button (click)="enableDropPinMode()" [disabled]="dropPinMode()">
+                Drop Pin
+              </ion-button>
+              <ion-button fill="outline" color="tertiary" (click)="openPluginDrawer()">
+                <ion-icon slot="start" name="sparkles"></ion-icon>
+                AI Plugins
+              </ion-button>
+              <ion-toggle class="pins-toggle" [checked]="showingPins()" (ionChange)="showPinsToggle()">
+                Show Pins
+              </ion-toggle>
+            </div>
 
             <ion-card-content>
               <div [style.cursor]="dropPinMode() ? 'crosshair' : 'default'" #osdViewer class="osd-viewer"></div>
@@ -54,7 +60,7 @@
         </ion-col>
 
         <!-- Info Panel (Right on Desktop / Bottom on Mobile) -->
-        <ion-col size="12" size-lg="5">
+        <ion-col size="12" size-lg="4" size-xl="3">
           <app-image-details [image]="imageInfo()"></app-image-details>
         </ion-col>
       </ion-row>

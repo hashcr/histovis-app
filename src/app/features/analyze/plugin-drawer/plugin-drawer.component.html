@@ -1,0 +1,199 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Run a plugin</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollY]="false">
+  <div class="drawer-body">
+
+    <!-- Left column: plugin list -->
+    <div class="left-col" [class.hide-mobile]="selectedPlugin() !== null">
+      @if (isLoadingPlugins()) {
+        <div class="list-state">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      }
+      @if (pluginsError()) {
+        <div class="list-state">
+          <ion-note color="danger">{{ pluginsError() }}</ion-note>
+          <ion-button fill="clear" size="small" (click)="loadPlugins()">Retry</ion-button>
+        </div>
+      }
+      @if (!isLoadingPlugins() && !pluginsError()) {
+        <ion-list lines="none">
+          @for (plugin of plugins(); track plugin.id) {
+            <ion-item
+              button
+              detail="false"
+              class="plugin-item"
+              [class.selected]="selectedPlugin()?.id === plugin.id"
+              (click)="selectPlugin(plugin)">
+              <div class="plugin-item-content">
+                <span class="plugin-name">{{ plugin.name }}</span>
+                <ion-badge [color]="getBadgeColor(plugin.code)">{{ plugin.code }}</ion-badge>
+              </div>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    </div>
+
+    <!-- Right column: detail pane -->
+    <div class="right-col" [class.hide-mobile]="selectedPlugin() === null">
+
+      @if (selectedPlugin() === null) {
+        <div class="empty-state">
+          <ion-note>Select a plugin to get started</ion-note>
+        </div>
+      }
+
+      @if (selectedPlugin(); as plugin) {
+        <!-- Mobile back button -->
+        <ion-button fill="clear" class="back-btn" (click)="clearSelection()">
+          <ion-icon slot="start" name="chevron-back"></ion-icon>
+          Plugins
+        </ion-button>
+
+        <!-- Plugin info -->
+        <ion-text color="primary">
+          <p class="plugin-title">{{ plugin.name }}</p>
+        </ion-text>
+        <ion-note class="plugin-desc">{{ plugin.description }}</ion-note>
+
+        <!-- Metadata -->
+        <p class="meta-row">
+          <ion-note>Queue: {{ plugin.topic }}</ion-note>
+        </p>
+        <p class="meta-row">
+          <ion-note>Installed by: {{ plugin.installedBy }}</ion-note>
+        </p>
+
+        <!-- Parameters -->
+        <p class="section-label">Parameters</p>
+
+        @if (argsEntries().length === 0) {
+          <ion-note>No parameters required</ion-note>
+        }
+
+        @for (entry of argsEntries(); track entry.key) {
+          <div class="arg-row">
+            <ion-input
+              class="arg-key"
+              fill="outline"
+              [disabled]="true"
+              [value]="entry.key">
+            </ion-input>
+            <ion-input
+              class="arg-value"
+              fill="outline"
+              [value]="entry.value"
+              (ionInput)="updateArg(entry.key, $event.detail.value ?? '')">
+            </ion-input>
+          </div>
+        }
+
+        <!-- Run button -->
+        <ion-button
+          expand="block"
+          color="primary"
+          class="run-btn"
+          (click)="submitJob()"
+          [disabled]="isSubmitting() || !selectedPlugin()">
+          @if (isSubmitting()) {
+            <ion-spinner name="crescent"></ion-spinner>
+          }
+          @if (!isSubmitting()) {
+            Run analysis
+          }
+        </ion-button>
+
+        <!-- Job history -->
+        <ion-item-divider>
+          <ion-label>Job history</ion-label>
+          <div slot="end" class="poll-status">
+            @if (hasRunningJobs() || isLoadingJobs()) {
+              <ion-spinner name="dots" class="poll-spinner"></ion-spinner>
+              <span class="poll-label">polling</span>
+            }
+            @if (!hasRunningJobs() && !isLoadingJobs()) {
+              <ion-button fill="clear" size="small" class="poll-refresh" (click)="loadJobs()">
+                <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+              </ion-button>
+            }
+          </div>
+        </ion-item-divider>
+
+        <!-- Filter chips -->
+        <div class="filter-row">
+          <ion-chip [color]="activeFilter() === 'ALL' ? 'primary' : 'default'"
+            (click)="activeFilter.set('ALL')">All</ion-chip>
+          <ion-chip [color]="activeFilter() === JobStatus.COMPLETED ? 'primary' : 'default'"
+            (click)="activeFilter.set(JobStatus.COMPLETED)">Completed</ion-chip>
+          <ion-chip [color]="activeFilter() === JobStatus.RUNNING ? 'primary' : 'default'"
+            (click)="activeFilter.set(JobStatus.RUNNING)">Running</ion-chip>
+          <ion-chip [color]="activeFilter() === JobStatus.FAILED ? 'primary' : 'default'"
+            (click)="activeFilter.set(JobStatus.FAILED)">Failed</ion-chip>
+        </div>
+
+        @if (isLoadingJobs()) {
+          <div class="jobs-loading">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+        }
+
+        @if (!isLoadingJobs()) {
+          @if (filteredJobs().length === 0) {
+            <div class="jobs-empty">
+              <ion-note>No jobs found</ion-note>
+            </div>
+          }
+
+          <ion-accordion-group [multiple]="false">
+            @for (job of filteredJobs(); track job.id) {
+              <ion-accordion
+                [value]="job.id"
+                [disabled]="!job.output"
+                [toggleIcon]="job.output ? 'chevron-down-outline' : ''">
+
+                <ion-item slot="header" lines="full" class="job-item">
+                  <span class="status-dot"
+                    [style.background]="'var(--ion-color-' + getStatusColor(job.status) + ')'">
+                  </span>
+                  <ion-label>
+                    <p class="job-code">{{ job.pluginCode }}</p>
+                    <p class="job-time">{{ job.date | date:'dd MMM yyyy, HH:mm' }}</p>
+                    <p class="job-user">{{ job.username }}</p>
+                  </ion-label>
+                  <ion-badge slot="end" [color]="getStatusColor(job.status)">{{ job.status }}</ion-badge>
+                </ion-item>
+
+                <div slot="content" class="job-output">
+                  @if (job.output) {
+                    @let formatted = formatOutput(job.output);
+                    @if (job.output.length <= 300) {
+                      <pre class="output-pre">{{ formatted.text }}</pre>
+                    } @else {
+                      <pre class="output-pre output-preview">{{ formatted.text.slice(0, 300) }}...</pre>
+                      <ion-button expand="block" fill="clear" size="small" color="primary"
+                        (click)="viewFullOutput(formatted.text)">
+                        View full output
+                      </ion-button>
+                    }
+                  }
+                </div>
+
+              </ion-accordion>
+            }
+          </ion-accordion-group>
+        }
+      }
+    </div>
+
+  </div>
+</ion-content>
