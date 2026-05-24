@@ -42,11 +42,17 @@
 
     <ion-item>
       <ion-label position="stacked">Image</ion-label>
-      <input #fileInput type="file" accept="image/*" (change)="onFileChange($event)" />
+      <input #fileInput type="file"
+        accept="image/jpeg,image/png,image/gif,image/webp,image/tiff,.tif,.tiff,.svs"
+        (change)="onFileChange($event)" />
     </ion-item>
 
     @if (preview()) {
     <ion-img [src]="preview()" class="ion-margin-top" style="border-radius:8px"></ion-img>
+    } @else if (previewUnavailable()) {
+    <ion-note class="ion-margin-top ion-padding-start" color="medium">
+      Preview is not available for this file format. The file has been selected and will be uploaded.
+    </ion-note>
     }
 
     <ion-button expand="block" class="ion-margin-top" type="submit" [disabled]="form().invalid">
