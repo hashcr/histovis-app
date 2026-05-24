@@ -2,6 +2,7 @@ export interface ImageInfo {
   id: string;
   fileName: string;
   url: string;
+  viewableImageUrl?: string;
   title: string;
   description: string;
   tagsList: string[];

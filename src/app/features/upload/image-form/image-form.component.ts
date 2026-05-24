@@ -37,7 +37,7 @@ export class ImageFormComponent {
     effect(() => {
       const data = this.imageData();
       if (data.url) {
-        this.preview.set(data.url)
+        this.preview.set(data.viewableImageUrl ?? data.url)
       };
     });
 
