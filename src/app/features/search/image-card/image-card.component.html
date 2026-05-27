@@ -1,6 +1,6 @@
 <ion-card [routerLink]="['/analyze', image().id]" routerDirection="forward" button>
   <div class="image-container">
-    <ion-img [src]="image().url" alt="{{ image().title }}"></ion-img>
+    <ion-img [src]="image().viewableImageUrl ?? image().url" alt="{{ image().title }}"></ion-img>
   </div>
   <ion-card-header>
     <ion-card-title>{{ image().title }}</ion-card-title>

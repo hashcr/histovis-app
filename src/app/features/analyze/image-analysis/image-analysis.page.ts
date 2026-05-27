@@ -64,7 +64,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       const ready = this.viewerReady();
 
       if (ready && info?.url) {
-        this.initViewer(info.url);
+        this.initViewer(info.viewableImageUrl ?? info.url);
       }
     });
 

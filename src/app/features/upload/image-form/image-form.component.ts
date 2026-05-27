@@ -3,9 +3,11 @@ import { ImageFormFormService } from './image-form.form.service';
 import { ImageInfo } from '../../../core/models/image.model';
 import { FormArray } from '@angular/forms';
 import { ImageFormValue } from './image-form.types';
-import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonText, IonContent, IonImg } from '@ionic/angular/standalone';
+import { IonItem, IonLabel, IonInput, IonTextarea, IonButton, IonText, IonContent, IonImg, IonNote } from '@ionic/angular/standalone';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TagsSelectorComponent } from '../../shared/components/tags-selector/tags-selector.component';
+import { NotificationService } from '../../../core/services/notifications/notification.service';
+import { isAllowedImageFile, isImagePreviewCapable } from '../../shared/utils/file-type.utils';
 
 
 @Component({
@@ -13,17 +15,19 @@ import { TagsSelectorComponent } from '../../shared/components/tags-selector/tag
   templateUrl: './image-form.component.html',
   styleUrls: ['./image-form.component.scss'],
   standalone: true,
-  imports: [IonItem, IonLabel, IonInput, IonTextarea, ReactiveFormsModule, IonButton, IonText, IonContent, IonImg, TagsSelectorComponent],
+  imports: [IonItem, IonLabel, IonInput, IonTextarea, ReactiveFormsModule, IonButton, IonText, IonContent, IonImg, IonNote, TagsSelectorComponent],
 })
 export class ImageFormComponent {
 
   // Services
   private imageFormService = inject(ImageFormFormService);
+  private notifications = inject(NotificationService);
 
   // Signals
   imageData = input.required<ImageInfo>();
   save = output<ImageFormValue>();
   preview = signal<string | null>(null);
+  previewUnavailable = signal<boolean>(false);
   resetTrigger = input<WritableSignal<boolean>>();
 
   // Form
@@ -33,7 +37,7 @@ export class ImageFormComponent {
     effect(() => {
       const data = this.imageData();
       if (data.url) {
-        this.preview.set(data.url)
+        this.preview.set(data.viewableImageUrl ?? data.url)
       };
     });
 
@@ -42,6 +46,7 @@ export class ImageFormComponent {
       if (trigger?.()) {
         this.imageFormService.resetForm(this.form());
         this.preview.set(null);
+        this.previewUnavailable.set(false);
         this.resetFileInput();
 
         // Reset the trigger back to false without looping
@@ -55,11 +60,24 @@ export class ImageFormComponent {
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) {
-      this.form().patchValue({ imageFile: file });
+    if (!file) return;
+
+    if (!isAllowedImageFile(file)) {
+      this.notifications.showError('Unsupported file type. Allowed: JPEG, PNG, GIF, WebP, TIFF, SVS.');
+      this.resetFileInput();
+      return;
+    }
+
+    this.form().patchValue({ imageFile: file });
+    this.preview.set(null);
+    this.previewUnavailable.set(false);
+
+    if (isImagePreviewCapable(file)) {
       const reader = new FileReader();
       reader.onload = () => this.preview.set(reader.result as string);
       reader.readAsDataURL(file);
+    } else {
+      this.previewUnavailable.set(true);
     }
   }
 
