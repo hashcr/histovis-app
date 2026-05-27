@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  authApiBaseUrl: 'http://localhost:8080/api/auth',
-  imagesApiBaseUrl: 'http://localhost:8081/api/images',
-  analysisApiBaseUrl: 'http://localhost:8082/api/analysis'
+  authApiBaseUrl: 'https://user-service-w3xg.onrender.com/api/auth',
+  imagesApiBaseUrl: 'https://images-service-7b1t.onrender.com/api/images',
+  analysisApiBaseUrl: 'https://analysis-service-9z2b.onrender.com/api/analysis'
 };
