@@ -86,13 +86,28 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
     this.viewerReady.set(true);
   }
 
+  private getViewportRegion(): { x: number; y: number; width: number; height: number } | undefined {
+    if (!this.viewer) return undefined;
+
+    const bounds = this.viewer.viewport.getBounds(true);
+    const tl = this.viewer.viewport.viewportToImageCoordinates(bounds.getTopLeft());
+    const br = this.viewer.viewport.viewportToImageCoordinates(bounds.getBottomRight());
+    return {
+      x: Math.max(0, Math.floor(tl.x)),
+      y: Math.max(0, Math.floor(tl.y)),
+      width: Math.min(Math.floor(br.x - tl.x), 2048),
+      height: Math.min(Math.floor(br.y - tl.y), 2048),
+    };
+  }
+
   async openPluginDrawer() {
     const modal = await this.modalController.create({
       component: PluginDrawerComponent,
       cssClass: 'plugin-drawer',
       componentProps: {
         imageId: this.imageId(),
-        imageUrl: this.imageInfo()?.url
+        imageUrl: this.imageInfo()?.url,
+        viewportRegion: this.getViewportRegion()
       }
     });
     await modal.present();
@@ -230,7 +245,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       OpenSeadragon({
         element: this.viewerElement.nativeElement,
         prefixUrl: 'assets/openseadragon/images/',
-        tileSources: { type: 'image', url },
+        tileSources: url.endsWith('.dzi') ? url : { type: 'image', url },
         showNavigator: true,
         animationTime: 0.9,
         blendTime: 0.1,

@@ -98,6 +98,14 @@
           </div>
         }
 
+        <!-- Viewport region (SVS only) -->
+        @if (viewportRegion) {
+          <ion-note class="region-info">
+            Region: x:{{ viewportRegion.x }} y:{{ viewportRegion.y }}
+            w:{{ viewportRegion.width }} h:{{ viewportRegion.height }}
+          </ion-note>
+        }
+
         <!-- Run button -->
         <ion-button
           expand="block"
