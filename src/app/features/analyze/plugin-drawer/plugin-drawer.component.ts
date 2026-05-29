@@ -35,6 +35,7 @@ export class PluginDrawerComponent implements OnInit, OnDestroy {
 
   imageId?: string;
   imageUrl?: string;
+  viewportRegion?: { x: number; y: number; width: number; height: number };
 
   protected readonly JobStatus = JobStatus;
 
@@ -149,11 +150,15 @@ export class PluginDrawerComponent implements OnInit, OnDestroy {
     if (!plugin) return;
 
     this.isSubmitting.set(true);
+    const args = { ...this.editableArgs() };
+    if (this.viewportRegion) {
+      args['region'] = JSON.stringify(this.viewportRegion);
+    }
     const request: SubmitJobRequest = {
       pluginCode: plugin.code,
       imageId: this.imageId ?? '',
       imageUrl: this.imageUrl ?? '',
-      args: this.editableArgs()
+      args
     };
     this.jobService.submit(request).subscribe({
       next: () => {
