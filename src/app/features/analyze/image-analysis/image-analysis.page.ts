@@ -230,7 +230,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
       OpenSeadragon({
         element: this.viewerElement.nativeElement,
         prefixUrl: 'assets/openseadragon/images/',
-        tileSources: { type: 'image', url },
+        tileSources: url.endsWith('.dzi') ? url : { type: 'image', url },
         showNavigator: true,
         animationTime: 0.9,
         blendTime: 0.1,
