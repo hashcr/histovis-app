@@ -3,6 +3,7 @@ export interface ImageInfo {
   fileName: string;
   url: string;
   viewableImageUrl?: string;
+  previewImageUrl?: string;
   title: string;
   description: string;
   tagsList: string[];
