@@ -1,0 +1,16 @@
+{
+  "code": "IHC_KI67",
+  "name": "IHC Ki-67 Proliferation Index",
+  "description": "Quantifies tumour cell proliferation in Ki-67 immunohistochemistry slides by detecting DAB-positive (brown) and haematoxylin-counterstained (blue) nuclei and computing the Ki-67 proliferation index as the percentage of positively stained nuclei.",
+  "queue": "ihc.ki67.queue",
+  "topic": "ihc.ki67.score",
+  "exampleArgs": {
+    "dab_thresh": "0.15",
+    "hematoxylin_thresh": "0.10",
+    "min_nucleus_area": "40",
+    "max_nucleus_area": "1200",
+    "tile_size": "1024",
+    "tile_overlap": "64"
+  },
+  "readme": "# IHC Ki-67 Proliferation Index\n\n## Overview\nKi-67 is a nuclear protein expressed exclusively in actively proliferating cells (G1, S, G2 and M phases). This plugin analyses Ki-67-stained whole-slide images by applying colour deconvolution to separate the DAB (3,3′-diaminobenzidine) and haematoxylin channels, detecting individual nuclei in each channel and computing the **Ki-67 proliferation index** — the ratio of DAB-positive nuclei to total nuclei, expressed as a percentage.\n\n## Parameters\n\n| Parameter | Default | Description |\n|---|---|---|\n| `dab_thresh` | `0.15` | Optical density threshold for classifying a nucleus as DAB-positive (Ki-67+). Increase to reduce false positives in weakly stained slides. |\n| `hematoxylin_thresh` | `0.10` | Optical density threshold for the haematoxylin channel used to detect Ki-67-negative nuclei. |\n| `min_nucleus_area` | `40` | Minimum nucleus area in pixels² to filter out staining artefacts and debris. |\n| `max_nucleus_area` | `1200` | Maximum nucleus area in pixels² to exclude tissue folds and clumped cells. |\n| `tile_size` | `1024` | Tile size in pixels when processing the slide in patches. |\n| `tile_overlap` | `64` | Overlap in pixels between adjacent tiles to prevent boundary artefacts. |\n\n## Output\nReturns a JSON object with the following top-level fields:\n- `ki67_index` — proliferation index as a float (0–100)\n- `positive_count` — total number of Ki-67-positive nuclei detected\n- `negative_count` — total number of Ki-67-negative nuclei detected\n- `total_count` — sum of positive and negative nuclei\n- `features` — GeoJSON feature array with one entry per nucleus containing `geometry.coordinates`, `properties.label` (`\"positive\"` or `\"negative\"`) and `properties.dab_od` (mean DAB optical density)\n\n## Clinical Context\nA Ki-67 index above 20 % is generally associated with high-grade tumours and poorer prognosis, though cut-offs are tissue- and guideline-dependent. Results from this plugin are intended for research use and must be reviewed by a qualified pathologist before any clinical interpretation.\n\n## References\n- Gerdes J. et al. (1984). *Cell cycle analysis of a cell proliferation-associated human nuclear antigen defined by the monoclonal antibody Ki-67*. Journal of Immunology.\n- Dowsett M. et al. (2011). *Assessment of Ki67 in Breast Cancer: Recommendations from the International Ki67 in Breast Cancer Working Group*. JNCI."
+}

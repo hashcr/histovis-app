@@ -1,0 +1,115 @@
+// ── Page intro ────────────────────────────────────────────────────────────────
+
+.page-subtitle {
+  margin: 0 0 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+// ── Column gutters ────────────────────────────────────────────────────────────
+
+.left-col {
+  @media (min-width: 768px) { padding-right: 8px; }
+}
+
+.right-col {
+  @media (min-width: 768px) { padding-left: 8px; }
+}
+
+// ── Drop zone ─────────────────────────────────────────────────────────────────
+
+.drop-zone-card {
+  cursor: pointer;
+  border: 2px dashed var(--ion-color-primary-tint);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &.drag-over {
+    border-color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.05);
+  }
+}
+
+// Flex-centre the inner content regardless of height
+.drop-body {
+  min-height: 160px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.drop-icon {
+  font-size: 3.5rem;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.drop-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.drop-hint {
+  font-size: 0.8rem;
+}
+
+// Remove ion-item background inside the drop zone
+.file-item {
+  --background: transparent;
+}
+
+// ── History card ──────────────────────────────────────────────────────────────
+
+// Stretch the card so it fills the column height on larger screens
+.history-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-body {
+  flex: 1;
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+.empty-state {
+  padding: 32px 16px;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+// ── Metadata fields ───────────────────────────────────────────────────────────
+
+.metadata-fields {
+  display: flex;
+  flex-direction: column;
+}
+
+// Monospace font for the JSON args textarea
+.metadata-code {
+  --color: var(--ion-color-medium-shade);
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+// ── Accordion detail panel ────────────────────────────────────────────────────
+
+.accordion-detail {
+  background: var(--ion-color-light);
+}
+
+// ── Card action bar ───────────────────────────────────────────────────────────
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--ion-border-color, var(--ion-color-light-shade));
+}
