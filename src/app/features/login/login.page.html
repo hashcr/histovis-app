@@ -1,75 +1,79 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true">
 
-<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- ── Hero / branding ─────────────────────────────────────── -->
+  <div class="login-hero ion-text-center ion-padding">
+    <div class="logo-wrap">
+      <ion-img src="assets/histovis-icon.png" alt="HistoVis logo"></ion-img>
+    </div>
+    <ion-text color="light">
+      <h1 class="app-name ion-no-margin">HistoVis</h1>
+    </ion-text>
+    <ion-text color="light">
+      <p class="app-tagline ion-no-margin">Histological Image Visualization</p>
+    </ion-text>
+  </div>
 
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Login</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- ── Login card ──────────────────────────────────────────── -->
+  <ion-card class="login-card">
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="ion-padding-vertical">
-    <ion-list lines="full">
+    <ion-card-header>
+      <ion-card-title>Sign in</ion-card-title>
+    </ion-card-header>
 
-      <ion-item>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
         <ion-input
           formControlName="username"
           label="Email"
           labelPlacement="floating"
           placeholder="Enter your email"
-          autocomplete="email">
+          autocomplete="email"
+          fill="outline">
         </ion-input>
-      </ion-item>
+        @if (form.get('username')?.touched && form.get('username')?.invalid) {
+          <ion-note color="danger" class="field-note">Email is required</ion-note>
+        }
 
-      @if (form.get('username')?.touched && form.get('username')?.invalid) {
-        <ion-text color="danger" class="ion-padding-start text-sm">
-          Email is required
-        </ion-text>
-      }
-
-      <ion-item>
         <ion-input
           type="password"
           formControlName="password"
           label="Password"
           labelPlacement="floating"
           placeholder="Enter your password"
-          autocomplete="current-password">
+          autocomplete="current-password"
+          fill="outline"
+          class="ion-margin-top">
           <ion-input-password-toggle slot="end"></ion-input-password-toggle>
         </ion-input>
-      </ion-item>
-
-      @if (form.get('password')?.touched && form.get('password')?.invalid) {
-        <ion-text color="danger" class="ion-padding-start text-sm">
-          Password is required
-        </ion-text>
-      }
-
-    </ion-list>
-
-    @if (error()) {
-      <ion-text color="danger" class="ion-text-center ion-padding-top">
-        {{ error() }}
-      </ion-text>
-    }
-
-    <div class="ion-padding-top">
-      <ion-button
-        expand="block"
-        type="submit"
-        [disabled]="form.invalid || loading()"
-        shape="round">
-        @if (loading()) {
-          <ion-spinner name="dots"></ion-spinner>
-        } @else {
-          Login
+        @if (form.get('password')?.touched && form.get('password')?.invalid) {
+          <ion-note color="danger" class="field-note">Password is required</ion-note>
         }
-      </ion-button>
-    </div>
-  </form>
+
+        @if (error()) {
+          <ion-note color="danger" class="error-note ion-margin-top">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            {{ error() }}
+          </ion-note>
+        }
+
+        <ion-button
+          expand="block"
+          type="submit"
+          color="primary"
+          shape="round"
+          class="ion-margin-top"
+          [disabled]="form.invalid || loading()">
+          @if (loading()) {
+            <ion-spinner name="dots"></ion-spinner>
+          } @else {
+            Sign in
+          }
+        </ion-button>
+
+      </form>
+    </ion-card-content>
+
+  </ion-card>
 
 </ion-content>

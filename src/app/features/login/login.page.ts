@@ -1,7 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem , IonInput, IonText, IonButton, IonSpinner, IonInputPasswordToggle} from '@ionic/angular/standalone';
+import {
+  IonContent, IonInput, IonButton, IonSpinner, IonInputPasswordToggle,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+  IonNote, IonImg, IonText, IonIcon
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { alertCircleOutline } from 'ionicons/icons';
 import { LoginFormService } from './login.form.service';
 import { LoginFormValueService } from './login.form.value.service';
 import { LoginRequest } from './login.service.types';
@@ -13,10 +19,18 @@ import { Router } from '@angular/router';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonInput, 
-    IonText, IonButton, IonSpinner, IonInputPasswordToggle, CommonModule, ReactiveFormsModule]
+  imports: [
+    IonContent, IonInput, IonButton, IonSpinner, IonInputPasswordToggle,
+    IonCard, IonCardHeader, IonCardTitle, IonCardContent,
+    IonNote, IonImg, IonText, IonIcon,
+    CommonModule, ReactiveFormsModule
+  ]
 })
 export class LoginPage {
+
+  constructor() {
+    addIcons({ alertCircleOutline });
+  }
 
   // Services
   private loginFormService = inject(LoginFormService);
