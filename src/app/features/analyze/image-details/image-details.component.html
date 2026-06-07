@@ -6,14 +6,15 @@
   <ion-card-content>
     <ion-list lines="none">
       <ion-item>
-        <!-- Tags -->
         <ion-label class="label-title">Tags</ion-label>
+      </ion-item>
+      <div class="tags-container">
         @for(tag of imageInfo()?.tagsList;track tag) {
         <ion-chip>
           <ion-label>{{ tag }}</ion-label>
         </ion-chip>
         }
-      </ion-item>
+      </div>
       <!-- Notes -->
       <ion-item class="ion-margin-top">
         <ion-label>Notes</ion-label>

@@ -1,0 +1,69 @@
+// ── Hero ─────────────────────────────────────────────────────────────────────
+
+.login-hero {
+  background: var(--ion-color-primary);
+  padding-top: 56px;
+  padding-bottom: 52px;
+  border-radius: 0 0 36px 36px;
+}
+
+.logo-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  overflow: hidden;
+  margin: 0 auto;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}
+
+.app-name {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-top: 16px !important;
+}
+
+.app-tagline {
+  font-size: 0.875rem;
+  opacity: 0.75;
+  margin-top: 6px !important;
+}
+
+// ── Card ─────────────────────────────────────────────────────────────────────
+
+.login-card {
+  // Overlaps the hero slightly for a layered feel
+  margin-top: -28px;
+  border-radius: 20px !important;
+
+  // Centre and constrain on larger screens
+  @media (min-width: 576px) {
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// ── Notes (field validation + form error) ────────────────────────────────────
+
+.field-note {
+  display: block;
+  padding: 4px 4px 0;
+  font-size: 0.78rem;
+}
+
+.error-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(var(--ion-color-danger-rgb), 0.08);
+  border: 1px solid rgba(var(--ion-color-danger-rgb), 0.3);
+  font-size: 0.875rem;
+
+  ion-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+}

@@ -6,9 +6,11 @@
     color: var(--ion-color-primary);
   }
 
-  ion-chip {
-    margin-right: 6px;
-    margin-top: 4px;
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 16px 8px;
   }
 
   ion-textarea {
