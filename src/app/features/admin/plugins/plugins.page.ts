@@ -56,7 +56,6 @@ export class PluginsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadHistory();
   }
 
   // ── Drop zone ───────────────────────────────────────────────────────────────
