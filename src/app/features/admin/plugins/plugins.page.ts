@@ -15,6 +15,7 @@ import {
 } from 'ionicons/icons';
 import { PluginInstallService } from './plugin-install.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
+import { validatePluginZip } from 'src/app/core/utils/plugin-zip.utils';
 import {
   PluginInstallJob, PluginInstallStatus, PluginMetadata
 } from './plugin-install.service.types';
@@ -88,11 +89,18 @@ export class PluginsPage implements OnInit {
     this.fileInputRef.nativeElement.value = '';
   }
 
-  private setFile(file: File): void {
+  private async setFile(file: File): Promise<void> {
     if (!file.name.endsWith('.zip')) {
       this.notifications.showError('Only .zip plugin files are supported.');
       return;
     }
+
+    const result = await validatePluginZip(file);
+    if (!result.valid) {
+      this.notifications.showError(result.error!);
+      return;
+    }
+
     this.selectedFile.set(file);
     this.installedPlugin.set(null);
   }
