@@ -5,14 +5,14 @@ import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonGrid, IonRow, IonCol,
   IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-  IonItem, IonLabel, IonList, IonNote,
+  IonItem, IonItemDivider, IonLabel, IonList, IonNote,
   IonIcon, IonButton, IonSpinner, IonBadge, IonText,
   IonInput, IonTextarea,
   IonAccordion, IonAccordionGroup,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline,
+  cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline, refreshOutline,
 } from 'ionicons/icons';
 import { interval, Subscription } from 'rxjs';
 import { PluginInstallService } from './plugin-install.service';
@@ -31,7 +31,7 @@ import { PluginMetadata } from './plugin-install.service.types';
     IonContent, IonHeader, IonTitle, IonToolbar,
     IonGrid, IonRow, IonCol,
     IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-    IonItem, IonLabel, IonList, IonNote,
+    IonItem, IonItemDivider, IonLabel, IonList, IonNote,
     IonIcon, IonButton, IonSpinner, IonBadge, IonText,
     IonInput, IonTextarea,
     IonAccordion, IonAccordionGroup,
@@ -67,8 +67,12 @@ export class PluginsPage implements OnInit, OnDestroy {
   allPlugins       = signal<Plugin[]>([]);
   isLoadingPlugins = signal(false);
 
+  hasPendingPlugins = computed(() =>
+    this.allPlugins().some(p => p.status === 'PENDING' || p.status === 'VERIFYING')
+  );
+
   constructor() {
-    addIcons({ cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline });
+    addIcons({ cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline, refreshOutline });
 
     effect(() => {
       const plugin = this.pluginDisplay();

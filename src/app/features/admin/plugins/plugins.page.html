@@ -148,6 +148,21 @@
             <ion-card-subtitle>Previously installed plugins</ion-card-subtitle>
           </ion-card-header>
 
+          <ion-item-divider>
+            <ion-label>Installed plugins</ion-label>
+            <div slot="end" class="poll-status">
+              @if (isLoadingPlugins() || hasPendingPlugins()) {
+                <ion-spinner name="dots" class="poll-spinner"></ion-spinner>
+                <span class="poll-label">polling</span>
+              }
+              @if (!isLoadingPlugins() && !hasPendingPlugins()) {
+                <ion-button fill="clear" size="small" class="poll-refresh" (click)="loadAllPlugins()">
+                  <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+                </ion-button>
+              }
+            </div>
+          </ion-item-divider>
+
           <ion-card-content class="ion-no-padding history-body">
             @if (isLoadingPlugins() && allPlugins().length === 0) {
               <div class="ion-text-center ion-padding">
