@@ -1,5 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonGrid, IonRow, IonCol,
@@ -13,12 +14,13 @@ import { addIcons } from 'ionicons';
 import {
   cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline,
 } from 'ionicons/icons';
+import { interval, Subscription } from 'rxjs';
 import { PluginInstallService } from './plugin-install.service';
+import { PluginService } from 'src/app/features/analyze/shared/services/plugin.service';
 import { NotificationService } from 'src/app/core/services/notifications/notification.service';
 import { validatePluginZip } from 'src/app/core/utils/plugin-zip.utils';
-import {
-  PluginInstallJob, PluginInstallStatus, PluginMetadata
-} from './plugin-install.service.types';
+import { Plugin, PluginStatus } from 'src/app/core/models/analysis.model';
+import { PluginMetadata } from './plugin-install.service.types';
 
 @Component({
   selector: 'app-plugins',
@@ -34,29 +36,70 @@ import {
     IonInput, IonTextarea,
     IonAccordion, IonAccordionGroup,
     DatePipe,
+    ReactiveFormsModule,
   ],
 })
-export class PluginsPage implements OnInit {
+export class PluginsPage implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   private installService = inject(PluginInstallService);
-  private notifications = inject(NotificationService);
+  private pluginService  = inject(PluginService);
+  private notifications  = inject(NotificationService);
+  private pollSub?: Subscription;
 
-  protected readonly PluginInstallStatus = PluginInstallStatus;
-
-  selectedFile  = signal<File | null>(null);
-  isDragOver    = signal(false);
-  isInstalling  = signal(false);
+  selectedFile    = signal<File | null>(null);
+  isDragOver      = signal(false);
+  isInstalling    = signal(false);
+  manifestPreview = signal<PluginMetadata | null>(null);
   installedPlugin = signal<PluginMetadata | null>(null);
 
-  installHistory   = signal<PluginInstallJob[]>([]);
-  isLoadingHistory = signal(false);
+  pluginDisplay = computed(() => this.manifestPreview() ?? this.installedPlugin());
+
+  // Readonly form controls — updated via effect when pluginDisplay changes
+  nameControl        = new FormControl('');
+  codeControl        = new FormControl('');
+  descriptionControl = new FormControl('');
+  queueControl       = new FormControl('');
+  topicControl       = new FormControl('');
+  exampleArgsControl = new FormControl('');
+  readmeControl      = new FormControl('');
+
+  allPlugins       = signal<Plugin[]>([]);
+  isLoadingPlugins = signal(false);
 
   constructor() {
     addIcons({ cloudUploadOutline, documentOutline, closeCircleOutline, extensionPuzzleOutline });
+
+    effect(() => {
+      const plugin = this.pluginDisplay();
+      this.nameControl.setValue(plugin?.name ?? '');
+      this.codeControl.setValue(plugin?.code ?? '');
+      this.descriptionControl.setValue(plugin?.description ?? '');
+      this.queueControl.setValue(plugin?.queue ?? '');
+      this.topicControl.setValue(plugin?.topic ?? '');
+      this.exampleArgsControl.setValue(plugin ? this.formatArgs(plugin.exampleArgs) : '');
+      this.readmeControl.setValue(plugin?.readme ?? '');
+    });
   }
 
   ngOnInit(): void {
+    this.loadAllPlugins();
+    this.pollSub = interval(10000).subscribe(() => this.loadAllPlugins());
+  }
+
+  ngOnDestroy(): void {
+    this.pollSub?.unsubscribe();
+  }
+
+  loadAllPlugins(): void {
+    this.isLoadingPlugins.set(true);
+    this.pluginService.getAll().subscribe({
+      next: response => {
+        this.allPlugins.set(response.plugins);
+        this.isLoadingPlugins.set(false);
+      },
+      error: () => this.isLoadingPlugins.set(false),
+    });
   }
 
   // ── Drop zone ───────────────────────────────────────────────────────────────
@@ -85,6 +128,7 @@ export class PluginsPage implements OnInit {
   clearFile(event: Event): void {
     event.stopPropagation();
     this.selectedFile.set(null);
+    this.manifestPreview.set(null);
     this.installedPlugin.set(null);
     this.fileInputRef.nativeElement.value = '';
   }
@@ -95,14 +139,18 @@ export class PluginsPage implements OnInit {
       return;
     }
 
-    const result = await validatePluginZip(file);
-    if (!result.valid) {
-      this.notifications.showError(result.error!);
-      return;
+    try {
+      const result = await validatePluginZip(file);
+      if (!result.valid) {
+        this.notifications.showError(result.error!);
+        return;
+      }
+      this.selectedFile.set(file);
+      this.manifestPreview.set(result.manifest as unknown as PluginMetadata);
+      this.installedPlugin.set(null);
+    } catch {
+      this.notifications.showError('Failed to read the zip file. Please try again.');
     }
-
-    this.selectedFile.set(file);
-    this.installedPlugin.set(null);
   }
 
   // ── Install ─────────────────────────────────────────────────────────────────
@@ -112,12 +160,12 @@ export class PluginsPage implements OnInit {
     if (!file) return;
 
     this.isInstalling.set(true);
-    this.installService.install(file).subscribe({
+    this.installService.install(file, this.manifestPreview()!).subscribe({
       next: response => {
         this.installedPlugin.set(response.plugin);
+        this.manifestPreview.set(null);
         this.isInstalling.set(false);
         this.notifications.showSuccess(`Plugin "${response.plugin.name}" installed successfully.`);
-        this.loadHistory();
       },
       error: err => {
         this.notifications.showError(err?.error?.message ?? 'Installation failed. Please try again.');
@@ -128,21 +176,9 @@ export class PluginsPage implements OnInit {
 
   onCancel(): void {
     this.selectedFile.set(null);
+    this.manifestPreview.set(null);
     this.installedPlugin.set(null);
     this.fileInputRef.nativeElement.value = '';
-  }
-
-  // ── History ─────────────────────────────────────────────────────────────────
-
-  loadHistory(): void {
-    this.isLoadingHistory.set(true);
-    this.installService.getInstallHistory().subscribe({
-      next: response => {
-        this.installHistory.set(response.jobs);
-        this.isLoadingHistory.set(false);
-      },
-      error: () => this.isLoadingHistory.set(false),
-    });
   }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -162,12 +198,12 @@ export class PluginsPage implements OnInit {
     return JSON.stringify(args, null, 2);
   }
 
-  getStatusColor(status: PluginInstallStatus): string {
-    const map: Record<PluginInstallStatus, string> = {
-      [PluginInstallStatus.COMPLETED]: 'success',
-      [PluginInstallStatus.RUNNING]:   'warning',
-      [PluginInstallStatus.PENDING]:   'medium',
-      [PluginInstallStatus.FAILED]:    'danger',
+  getStatusColor(status: PluginStatus): string {
+    const map: Record<PluginStatus, string> = {
+      INSTALLED:  'success',
+      VERIFYING:  'warning',
+      PENDING:    'medium',
+      FAILED:     'danger',
     };
     return map[status] ?? 'medium';
   }
