@@ -18,6 +18,8 @@ export interface Job {
   username: string;
 }
 
+export type PluginStatus = 'PENDING' | 'VERIFYING' | 'INSTALLED' | 'FAILED';
+
 export interface Plugin {
   id: string;               // UUID serialized as string
   code: string;             // short unique identifier e.g. 'STARDIST_HE'
@@ -29,4 +31,5 @@ export interface Plugin {
   installedBy: string;      // username of admin who installed it
   installedDate: string;    // ISO date string (LocalDateTime serialized by Jackson)
   readme: string;           // markdown string
+  status: PluginStatus;
 }

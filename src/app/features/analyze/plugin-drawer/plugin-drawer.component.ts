@@ -122,7 +122,7 @@ export class PluginDrawerComponent implements OnInit, OnDestroy {
     this.pluginsError.set(null);
     this.pluginService.getAll().subscribe({
       next: response => {
-        this.plugins.set(response.plugins);
+        this.plugins.set(response.plugins.filter(p => p.status === 'INSTALLED'));
         this.isLoadingPlugins.set(false);
       },
       error: err => {
