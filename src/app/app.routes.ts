@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    redirectTo: 'upload',
+    redirectTo: 'search',
     pathMatch: 'full',
   },
   {
