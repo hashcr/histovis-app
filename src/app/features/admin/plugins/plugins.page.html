@@ -61,11 +61,11 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Metadata card — always visible, populated after install -->
+        <!-- Metadata card — populated from manifest on file load, confirmed after install -->
         <ion-card>
           <ion-card-header>
-            <ion-card-subtitle>Plugin Metadata</ion-card-subtitle>
-            <ion-card-title>{{ installedPlugin()?.name || '—' }}</ion-card-title>
+            <ion-card-subtitle>{{ manifestPreview() ? 'Preview' : 'Plugin Metadata' }}</ion-card-subtitle>
+            <ion-card-title>{{ pluginDisplay()?.name || '—' }}</ion-card-title>
           </ion-card-header>
           <ion-card-content class="metadata-fields">
 
@@ -74,7 +74,7 @@
               label="Name"
               labelPlacement="floating"
               [readonly]="true"
-              [value]="installedPlugin()?.name ?? ''">
+              [formControl]="nameControl">
             </ion-input>
 
             <ion-input
@@ -82,7 +82,7 @@
               label="Code"
               labelPlacement="floating"
               [readonly]="true"
-              [value]="installedPlugin()?.code ?? ''"
+              [formControl]="codeControl"
               class="ion-margin-top">
             </ion-input>
 
@@ -92,7 +92,7 @@
               labelPlacement="floating"
               [readonly]="true"
               [autoGrow]="true"
-              [value]="installedPlugin()?.description ?? ''"
+              [formControl]="descriptionControl"
               class="ion-margin-top">
             </ion-textarea>
 
@@ -101,7 +101,7 @@
               label="Queue"
               labelPlacement="floating"
               [readonly]="true"
-              [value]="installedPlugin()?.queue ?? ''"
+              [formControl]="queueControl"
               class="ion-margin-top">
             </ion-input>
 
@@ -110,7 +110,7 @@
               label="Topic"
               labelPlacement="floating"
               [readonly]="true"
-              [value]="installedPlugin()?.topic ?? ''"
+              [formControl]="topicControl"
               class="ion-margin-top">
             </ion-input>
 
@@ -120,7 +120,7 @@
               labelPlacement="floating"
               [readonly]="true"
               [autoGrow]="true"
-              [value]="formatArgs(installedPlugin()?.exampleArgs)"
+              [formControl]="exampleArgsControl"
               class="ion-margin-top metadata-code">
             </ion-textarea>
 
@@ -130,8 +130,8 @@
               labelPlacement="floating"
               [readonly]="true"
               [autoGrow]="true"
-              [value]="installedPlugin()?.readme ?? ''"
-              class="ion-margin-top metadata-code">
+              [formControl]="readmeControl"
+              class="ion-margin-top">
             </ion-textarea>
 
           </ion-card-content>
@@ -148,30 +148,45 @@
             <ion-card-subtitle>Previously installed plugins</ion-card-subtitle>
           </ion-card-header>
 
+          <ion-item-divider>
+            <ion-label>Installed plugins</ion-label>
+            <div slot="end" class="poll-status">
+              @if (isLoadingPlugins() || hasPendingPlugins()) {
+                <ion-spinner name="dots" class="poll-spinner"></ion-spinner>
+                <span class="poll-label">polling</span>
+              }
+              @if (!isLoadingPlugins() && !hasPendingPlugins()) {
+                <ion-button fill="clear" size="small" class="poll-refresh" (click)="loadAllPlugins()">
+                  <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+                </ion-button>
+              }
+            </div>
+          </ion-item-divider>
+
           <ion-card-content class="ion-no-padding history-body">
-            @if (isLoadingHistory()) {
+            @if (isLoadingPlugins() && allPlugins().length === 0) {
               <div class="ion-text-center ion-padding">
                 <ion-spinner name="dots"></ion-spinner>
               </div>
-            } @else if (installHistory().length === 0) {
+            } @else if (allPlugins().length === 0) {
               <div class="empty-state ion-text-center ion-padding">
                 <ion-icon name="extension-puzzle-outline" class="empty-icon" color="medium"></ion-icon>
                 <ion-text color="medium">
-                  <p class="ion-no-margin">No plugins installed yet.</p>
+                  <p class="ion-no-margin">No plugins found.</p>
                 </ion-text>
               </div>
             } @else {
               <ion-accordion-group>
-                @for (job of installHistory(); track job.id) {
-                  <ion-accordion [value]="job.id">
+                @for (plugin of allPlugins(); track plugin.id) {
+                  <ion-accordion [value]="plugin.id">
                     <ion-item slot="header" lines="full">
                       <ion-icon name="extension-puzzle-outline" slot="start" color="medium"></ion-icon>
                       <ion-label>
-                        <h3>{{ job.pluginName }}</h3>
-                        <p>{{ job.date | date:'medium' }}</p>
+                        <h3>{{ plugin.name }}</h3>
+                        <p>{{ plugin.installedDate | date:'medium' }}</p>
                       </ion-label>
-                      <ion-badge slot="end" [color]="getStatusColor(job.status)">
-                        {{ job.status }}
+                      <ion-badge slot="end" [color]="getStatusColor(plugin.status)">
+                        {{ plugin.status }}
                       </ion-badge>
                     </ion-item>
                     <div slot="content" class="accordion-detail">
@@ -179,20 +194,20 @@
                         <ion-item>
                           <ion-label>
                             <ion-note>Code</ion-note>
-                            <p>{{ job.pluginCode }}</p>
+                            <p>{{ plugin.code }}</p>
                           </ion-label>
                         </ion-item>
                         <ion-item>
                           <ion-label>
                             <ion-note>Installed by</ion-note>
-                            <p>{{ job.installedBy }}</p>
+                            <p>{{ plugin.installedBy }}</p>
                           </ion-label>
                         </ion-item>
-                        @if (job.error) {
+                        @if (plugin.description) {
                           <ion-item>
                             <ion-label class="ion-text-wrap">
-                              <ion-note color="danger">Error</ion-note>
-                              <p>{{ job.error }}</p>
+                              <ion-note>Description</ion-note>
+                              <p>{{ plugin.description }}</p>
                             </ion-label>
                           </ion-item>
                         }

@@ -11,6 +11,11 @@ export class StorageService {
         return raw ? JSON.parse(raw) : null;
     }
 
+    getSync<T>(key: string): T | null {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+    }
+
     async remove(key: string) {
         localStorage.removeItem(key);
     }
