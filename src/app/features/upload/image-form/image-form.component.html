@@ -11,7 +11,7 @@
 
     <ion-item>
       <ion-label position="floating">Filename</ion-label>
-      <ion-input formControlName="fileName"></ion-input>
+      <ion-input formControlName="fileName" [readonly]="true"></ion-input>
     </ion-item>
     @if (form().controls.fileName.touched && form().controls.fileName.invalid) {
     <ion-text color="danger" class="ion-padding-start">Filename is required</ion-text>
