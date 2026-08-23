@@ -68,7 +68,7 @@ export class ImageFormComponent {
       return;
     }
 
-    this.form().patchValue({ imageFile: file });
+    this.form().patchValue({ imageFile: file, fileName: file.name });
     this.preview.set(null);
     this.previewUnavailable.set(false);
 

@@ -290,7 +290,7 @@ export class ImageAnalysisPage implements AfterViewInit, OnInit, OnDestroy {
   private createNativePin(id: string) {
     const wrapper = document.createElement('div');
     wrapper.id = id;
-    wrapper.innerHTML = `<img src="assets/orange_pin.png" width="20" height="20" style="object-fit: contain;" />`;
+    wrapper.innerHTML = `<img src="assets/orange_pin.png" width="35" height="35" style="object-fit: contain;" />`;
     wrapper.className = "pin-overlay";
     const tracker = this.createMouseTracker(wrapper);
     tracker.setTracking(true);
