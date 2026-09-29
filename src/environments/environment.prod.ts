@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  authApiBaseUrl: 'https://users.tenetagency.online/api/auth',
-  imagesApiBaseUrl: 'https://images.tenetagency.online/api/images',
-  analysisApiBaseUrl: 'https://analysis.tenetagency.online/api/analysis'
+  authApiBaseUrl: 'https://users.46.62.219.177.sslip.io/api/auth',
+  imagesApiBaseUrl: 'https://images.46.62.219.177.sslip.io/api/images',
+  analysisApiBaseUrl: 'https://analysis.46.62.219.177.sslip.io/api/analysis'
 };
