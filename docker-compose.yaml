@@ -1,0 +1,17 @@
+services:
+  histovis-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIG: ${BUILD_CONFIG:-development}
+    ports:
+      # Exposed on 8100 (Ionic default & pre-whitelisted in backend Spring Security CORS)
+      - "${APP_PORT:-8100}:80"
+    restart: unless-stopped
+    networks:
+      - histovis-network
+
+networks:
+  histovis-network:
+    name: histovis-network
